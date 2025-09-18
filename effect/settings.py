@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
+import secrets
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,7 +24,6 @@ SECRET_KEY = 'django-insecure-4*z$6=02i=k9i@c$9mzy7k@ac_3e6=vp!-b0hn5b22p9z!8#jg
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 
 ALLOWED_HOSTS = []
 
@@ -43,8 +43,14 @@ INSTALLED_APPS = [
 
 ]
 
-
 AUTH_USER_MODEL = 'auth_app.CustomUserModel'
+
+LOGIN_URL = '/api/v1/auth/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/api/v1/auth/login/'
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,16 +131,24 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-
-AUTHENTICATION_BACKENDS = (
-    # 'django.contrib.auth.backends.ModelBackend',
-    'auth_app.authentication.EmailBackend'
-)
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ]
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'auth_app.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'login': '5/min',
+        'refresh': '10/min',
+        'anon': '100/day',
+        'user': '1000/hour',
+    },
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',)
 }
+
+
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', secrets.token_bytes(64))
+JWT_ALGORITHM = 'HS256'
+JWT_ACCESS_TOKEN_EXPIRATION = 900      # 15 минут
+JWT_REFRESH_TOKEN_EXPIRATION = 1296000  # 7 дней
