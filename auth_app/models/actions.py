@@ -1,6 +1,11 @@
+from importlib import resources
+
 from django.db import models
 
+from auth_app.models.permissions import PermissionsModel
 
-class ActionModel(models.Model):
-    name = models.CharField('Название действия', max_length=100)
+
+class ActionsModel(models.Model):
+    name = models.CharField('Название действия', max_length=100, unique=True)
     description = models.TextField('Описание действия', null=True, blank=True)
+    resource = models.ManyToManyField('auth_app.ResoursesModel', related_name='actions', through=PermissionsModel)
