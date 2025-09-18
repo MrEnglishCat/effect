@@ -15,7 +15,7 @@ class JWTAuthentication(BaseAuthentication):
         if not auth_header.startswith('Bearer '):
             raise AuthenticationFailed('Невалидный JWT токен!')
 
-        token = auth_header.split()[-1]
+        token = auth_header.replace('Bearer ', '')
 
         payload = decode_token(token)
 
