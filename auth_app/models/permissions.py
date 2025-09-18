@@ -10,4 +10,10 @@ class PermissionsModel(models.Model):
 
 
     class Meta:
+        verbose_name = 'Разрешение'
+        verbose_name_plural = 'Разрешения'
         unique_together = ('resource_id', 'action_id')
+
+
+    def __str__(self):
+        return f"Разрешение {self.action_id.name} для {self.resource_id.name}"

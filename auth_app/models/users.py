@@ -40,12 +40,17 @@ class CustomUserModel(AbstractBaseUser):
 
     objects = CustomUserManager()
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
     def __str__(self):
         return self.email
 
     def get_full_name(self):
         parts = (self.last_name, self.middle_name, self.first_name)
         return " ".join(filter(None, parts))
+
 
 
 
