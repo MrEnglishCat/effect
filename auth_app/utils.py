@@ -1,6 +1,7 @@
 import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta, UTC
+from os import access
 from typing import Optional
 
 import jwt
@@ -151,8 +152,15 @@ class TokenService:
 
 
     @classmethod
-    def reset_jwt_tokens(cls, user_id: int, is_revoke_all: bool = False):
-        ...
+    def reset_jwt_tokens(cls, request_token, user):
+
+        payload, jti, user_id, exp, errors = cls.check_jwt_token(request_token, user)
+        if errors:
+            return None, None, errors
+
+        access_token = cls.generate_access_token(user)
+        return access_token, request_token, None
+
 
 
     @classmethod
