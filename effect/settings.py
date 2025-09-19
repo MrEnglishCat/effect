@@ -148,7 +148,8 @@ REST_FRAMEWORK = {
 }
 
 
-JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', secrets.token_bytes(64))
+# JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', secrets.token_bytes(64))
+JWT_SECRET_KEY = b'\x10W/\x12\xd5\xe0\x80\x91#\x1b\xce\x1fb\xd9hE7\xd76f\xeb$\x8bi\xc5\xaa\xa4\x90+\xbfi\xd0M\xc3\xf4(`/\x82CR\xc0Q\xfa1Om\xcd\xda>b,U\xb4\xe7\xccz\x8a\xd8\xb4\xb7\x06\rn'
 JWT_ALGORITHM = 'HS256'
 JWT_ACCESS_TOKEN_EXPIRATION = 900      # 15 минут
 JWT_REFRESH_TOKEN_EXPIRATION = 1296000  # 7 дней
