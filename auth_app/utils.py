@@ -84,7 +84,7 @@ class TokenService:
             return None
 
     @classmethod
-    def revoke_jwt_token(cls,  user_id: int, jti: Optional[str] = None, is_revoke_all: bool = False):
+    def revoke_jwt_token(cls, user_id: int, jti: Optional[str] = None, is_revoke_all: bool = False):
         """
         Отзывает один токен по jti или все токены пользователя.
 
@@ -108,14 +108,11 @@ class TokenService:
             except (ValueError, TypeError):
                 return False, 'Невалидный формат jti!', status.HTTP_400_BAD_REQUEST, 0
 
-
         tokens_to_revoke = IssueTokenModel.objects.filter(**base_filter).select_for_update()
         if tokens_to_revoke.count() == 0:
             return False, 'Нет активных токенов для отзыва.', status.HTTP_200_OK, 0
 
         count_error_revoke_tokens = 0
-
-
 
         for token in tokens_to_revoke:
             try:
@@ -133,7 +130,6 @@ class TokenService:
             revoked_at=datetime.now(UTC)
         )
 
-
         if jti is not None:
             if count_revoked_tokens > 0:
                 success = True
@@ -150,18 +146,21 @@ class TokenService:
 
         return success, message, status_code, count_revoked_tokens
 
-
     @classmethod
-    def reset_jwt_tokens(cls, request_token, user):
+    def reset_jwt_tokens(cls, request_token, user, **kwargs):
 
         payload, jti, user_id, exp, errors = cls.check_jwt_token(request_token, user)
         if errors:
             return None, None, errors
 
+        if datetime.fromtimestamp(exp, UTC) < datetime.now(UTC):
+            # TODO генерация нового refresh token
+            ip_address = kwargs.pop('ip_address', None)
+            user_agent = kwargs.pop('user_agent', None)
+            request_token = cls.generate_refresh_token(user, ip_address=ip_address, user_agent=user_agent, **kwargs)
+
         access_token = cls.generate_access_token(user)
         return access_token, request_token, None
-
-
 
     @classmethod
     def check_jwt_token(cls, request_token, request_user=None):
@@ -226,6 +225,5 @@ class TokenService:
                 )
             )
             return None, None, None, None, errors
-
 
         return payload, jti, user_id, exp, None
