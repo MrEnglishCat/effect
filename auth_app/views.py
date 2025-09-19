@@ -241,9 +241,15 @@ class BaseTokenRevokeAPIView(APIView):
 
 
 class TokenRevokeAPIView(BaseTokenRevokeAPIView):
+    """
+    endpoint для отзыва одного токена пользователя(текущего известного)
+    """
     ...
 
 
 class TokenRevokeALLAPIView(BaseTokenRevokeAPIView):
+    """
+    endpoint для отзыва всех токенов для текущего пользователя
+    """
     revoke_all = True
 
