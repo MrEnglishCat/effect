@@ -1,7 +1,8 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from auth_app.views import CustomUserAPIView, TokenAPIView, LoginAPIView, LogoutAPIView, RegisterAPIView, TokenRevokeAPIView
+from auth_app.views import CustomUserAPIView, TokenAPIView, LoginAPIView, LogoutAPIView, RegisterAPIView, \
+    TokenRevokeAPIView, TokenRevokeALLAPIView
 
 user_router = routers.DefaultRouter()
 user_router.register(r'users', CustomUserAPIView, basename='user')
@@ -15,7 +16,7 @@ urlpatterns = [
     path('tokens/', TokenAPIView.as_view(), name='tokens'), # пока что под вопросом, т к токены выдаются в login, а обновление в refresh
     path('token/refresh/', TokenAPIView.as_view(), name='token_refresh'),
     path('token/revoke/', TokenRevokeAPIView.as_view(), name='token_revoke'),
-    path('token/revoke/all/<int:user_id>/', TokenRevokeAPIView.as_view(), name='token_revoke'),
+    path('token/revoke/<int:user_id>/all/', TokenRevokeALLAPIView.as_view(), name='token_revoke_all'),
     path('', include(user_router.urls), name='users'),
 
 ]

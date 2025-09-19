@@ -64,8 +64,10 @@ class RegisterAPIView(APIView):
         serializer = RegisterCustomUserSerializer(data=request.data)
         if serializer.is_valid():
             user = CustomUserModel.objects.create_user(**serializer.validated_data)
-            access_token, refresh_token = TokenService.generate_jwt_tokens(user, ip_address=request.META.get("REMOTE_ADDR"),
-                                                              user_agent=request.META.get("HTTP_USER_AGENT"))
+            access_token, refresh_token = TokenService.generate_jwt_tokens(user,
+                                                                           ip_address=request.META.get("REMOTE_ADDR"),
+                                                                           user_agent=request.META.get(
+                                                                               "HTTP_USER_AGENT"))
             user.last_login = datetime.now(UTC)
             user.save()
             # user = serializer.save()  # TODO будет время переопределить в сериализаторе что бы хэшировался пароль
@@ -140,7 +142,7 @@ class LoginAPIView(APIView):
         user.last_login = datetime.now(UTC)
         user.save(update_fields=['last_login'])
         access_token, refresh_token = TokenService.generate_jwt_tokens(user, ip_address=request.META.get("REMOTE_ADDR"),
-                                                          user_agent=request.META.get("HTTP_USER_AGENT"))
+                                                                       user_agent=request.META.get("HTTP_USER_AGENT"))
 
         return Response(
             {
@@ -187,14 +189,12 @@ class LogoutAPIView(APIView):
                 status=status_code
             )
 
-        success, message, status_code = TokenService.revoke_jwt_token(jti, user_id, exp)
+        success, message, status_code, _ = TokenService.revoke_jwt_token(user_id, jti)
 
         return Response({
             'success': success,
-            'message': f'Пользователь {request.user.email} успешно разлогинен!' if success else f"Пользователь уже был разлогинен! {message}"
+            'message': f'Пользователь {request.user.email} успешно разлогинен!' if success else f"Пользователь уже был разлогинен! {message}",
         }, status=status_code)
-
-
 
 
 class TokenRevokeAPIView(APIView):
@@ -222,10 +222,50 @@ class TokenRevokeAPIView(APIView):
                 },
                 status=status_code
             )
-
-        success, message, status_code = TokenService.revoke_jwt_token(jti, user_id, exp)
-
+        success, message, status_code, count_revoked_tokens = TokenService.revoke_jwt_token(user_id, jti)
         return Response({
             'success': success,
-            'message': message
+            'message': message,
+            'count_revoked_tokens': count_revoked_tokens
+        }, status=status_code)
+
+
+class TokenRevokeALLAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id:int):
+        if request.user.id != user_id:
+            return Response(
+                {
+                    'success': False,
+                    'message': f'Попытка отзыва токена(USER_ID#{request.user.id}) другого пользователя: ID#{user_id}!'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Refresh токен обязателен!'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        payload, jti, user_id, exp, errors = TokenService.check_jwt_token(refresh_token, request.user)
+
+        if errors:
+            message, status_code = errors[0]
+            return Response(
+                {
+                    'success': False,
+                    'message': message,
+                },
+                status=status_code
+            )
+        success, message, status_code, count_revoked_tokens = TokenService.revoke_jwt_token(user_id)
+        return Response({
+            'success': success,
+            'message': message,
+            'count_revoked_tokens': count_revoked_tokens
         }, status=status_code)

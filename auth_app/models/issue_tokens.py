@@ -8,7 +8,7 @@ class IssueTokenModel(models.Model):
     issued_at = models.DateTimeField('Дата выдачи', auto_now_add=True, db_index=True)
     expiries_at = models.DateTimeField('Срок действия', db_index=True)
     is_revoked = models.BooleanField('Отозван', default=False, db_index=True)
-    revoke_at = models.DateTimeField('Дата отзыва', null=True, blank=True)
+    revoked_at = models.DateTimeField('Дата отзыва', null=True, blank=True)
     ip_address = models.GenericIPAddressField('IP-адрес', null=True, blank=True)
     user_agent = models.TextField('user-Agent', blank=True)
     last_used_at = models.DateTimeField('Последнее использование', null=True, blank=True)
