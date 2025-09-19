@@ -1,24 +1,32 @@
-# from django.contrib.redirects.models import Redirect
-import email
-import uuid
 from datetime import datetime, UTC
 from pprint import pprint
 
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.exceptions import NotAuthenticated, AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 
-from auth_app.models import CustomUserModel, BlacklistToken, IssueTokenModel
-from auth_app.serializers import CustomUserSerializer, RegisterCustomUserSerializer, LoginCustomUserSerializer
+
+from auth_app.models import CustomUserModel
+from auth_app.serializers import CustomUserSerializer, RegisterCustomUserSerializer, LoginCustomUserSerializer, \
+    MyProfileSerializer
 from django.contrib.auth import authenticate
 
 from auth_app.utils import TokenService
 
+
+
+class MyProfileAPIView(ReadOnlyModelViewSet):
+    serializer_class = MyProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def get_queryset(self):
+        return CustomUserModel.objects.filter(id=self.request.user.id)
 
 class CustomUserAPIView(ModelViewSet):
     """
@@ -30,7 +38,6 @@ class CustomUserAPIView(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-
         if self.request.user.is_staff or self.request.user.is_superuser:
             queryset = self.get_queryset()
             obj = get_object_or_404(queryset, pk=self.kwargs['pk'])
@@ -157,7 +164,7 @@ class LoginAPIView(APIView):
 
 class LogoutAPIView(APIView):
     """
-    endpoint для разлогинивания пользователя и отзыва токена
+    Разлогинивает пользователя и отзывает токен
     """
     permission_classes = [IsAuthenticated]
 
@@ -207,6 +214,16 @@ class BaseTokenRevokeAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+
+        target_user_id = self.get_target_user_id(request, *args, **kwargs)
+
+        if not self.can_revoke(request, target_user_id):
+            return Response({
+                'success': False,
+                'message': f'Недостаточно прав для отзыва токенов пользователя ID#{target_user_id}'
+            }, status=status.HTTP_403_FORBIDDEN)
+
+
         refresh_token = request.data.get('refresh')
         if not refresh_token:
             return Response(
@@ -239,17 +256,72 @@ class BaseTokenRevokeAPIView(APIView):
             'count_revoked_tokens': count_revoked_tokens
         }, status=status_code)
 
+    def get_target_user_id(self, request, *args, **kwargs):
+        """
+        Возвращает ID пользователя, чьи токены нужно отозвать.
+        :param request:
+        :param args:
+        :param kwargs: используется для отзыва токенов любых пользователей админами
+        :return:
+        """
+        return request.user.id
+
+
+    def can_revoke(self, request, target_user_id):
+        """
+        Проверяет, может ли текущий пользователь отозвать токены target_user_id.
+        :param request:
+        :param target_user_id: нужен для сравнения с
+        :return:
+        """
+        return request.user.id == target_user_id
 
 class TokenRevokeAPIView(BaseTokenRevokeAPIView):
     """
-    endpoint для отзыва одного токена пользователя(текущего известного)
+    Отзывает один refresh-токен (указанный в теле запроса).
     """
     ...
 
 
 class TokenRevokeALLAPIView(BaseTokenRevokeAPIView):
     """
-    endpoint для отзыва всех токенов для текущего пользователя
+    Отзывает ВСЕ refresh-токены текущего пользователя.
     """
     revoke_all = True
 
+
+
+class AdminTokenRevokeALLAPIView(BaseTokenRevokeAPIView):
+    """
+    Админ может отозвать все токены любого пользователя.
+    """
+    revoke_all = True
+
+    def get_target_user_id(self, request, *args, **kwargs):
+        """
+        Возвращает ID пользователя, чьи токены нужно отозвать.
+        :param request:
+        :param args:
+        :param kwargs: используется для отзыва токенов любых пользователей админами
+        :return:
+        """
+        return kwargs.get('user_id')
+
+
+    def can_revoke(self, request, target_user_id):
+        """
+        Проверяет, может ли текущий пользователь отозвать токены target_user_id.
+        :param request:
+        :param target_user_id: нужен для сравнения с
+        :return:
+        """
+        return request.user.is_staff or request.user.is_superuser
+
+
+# class AdminTokenRevokeAPIView(AdminTokenRevokeALLAPIView):
+#     """
+#     Админ может отозвать один токен пользователя.
+#       заморозил, не нашел для чего применить.
+#
+#     """
+#     revoke_all = False

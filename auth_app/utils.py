@@ -149,6 +149,12 @@ class TokenService:
 
         return success, message, status_code, count_revoked_tokens
 
+
+    @classmethod
+    def reset_jwt_tokens(cls, user_id: int, is_revoke_all: bool = False):
+        ...
+
+
     @classmethod
     def check_jwt_token(cls, request_token, request_user=None):
         """
@@ -193,14 +199,15 @@ class TokenService:
             )
             return None, None, None, None, errors
 
-        if request_user and user_id != request_user.id:
-            errors.append(
-                (
-                    f'Попытка отзыва токена(USER_ID#{request_user.id}) другого пользователя: ID#{user_id}!',
-                    status.HTTP_403_FORBIDDEN
-                )
-            )
-            return None, None, None, None, errors
+        # TODO эта часть кода мешает если админы будут отзывать токены
+        # if request_user and user_id != request_user.id:
+        #     errors.append(
+        #         (
+        #             f'Попытка отзыва токена(USER_ID#{request_user.id}) другого пользователя: ID#{user_id}!',
+        #             status.HTTP_403_FORBIDDEN
+        #         )
+        #     )
+        #     return None, None, None, None, errors
 
         try:
             jti = uuid.UUID(jti_str)
