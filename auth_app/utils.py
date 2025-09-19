@@ -83,7 +83,7 @@ class TokenService:
             return None
 
     @classmethod
-    def revoke_jwt_token(cls,  user_id: int, jti: Optional[str] = None):
+    def revoke_jwt_token(cls,  user_id: int, jti: Optional[str] = None, is_revoke_all: bool = False):
         """
         Отзывает один токен по jti или все токены пользователя.
 
@@ -99,7 +99,7 @@ class TokenService:
             'is_revoked': False,
         }
 
-        if jti is not None:
+        if jti is not None and not is_revoke_all:
             try:
                 base_filter['jti'] = jti
                 jti_uuid = uuid.UUID(jti, version=4) if not isinstance(jti, uuid.UUID) else jti
@@ -196,7 +196,7 @@ class TokenService:
         if request_user and user_id != request_user.id:
             errors.append(
                 (
-                    'Токен не принадлежит текущему пользователю!',
+                    f'Попытка отзыва токена(USER_ID#{request_user.id}) другого пользователя: ID#{user_id}!',
                     status.HTTP_403_FORBIDDEN
                 )
             )

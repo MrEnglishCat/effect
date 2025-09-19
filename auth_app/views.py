@@ -197,10 +197,16 @@ class LogoutAPIView(APIView):
         }, status=status_code)
 
 
-class TokenRevokeAPIView(APIView):
+class BaseTokenRevokeAPIView(APIView):
+    """
+    Базовый класс для отзыва токенов.
+    Параметр `revoke_all` определяет, отзывать один токен или все.
+    """
+
+    revoke_all = False
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         refresh_token = request.data.get('refresh')
         if not refresh_token:
             return Response(
@@ -222,7 +228,11 @@ class TokenRevokeAPIView(APIView):
                 },
                 status=status_code
             )
-        success, message, status_code, count_revoked_tokens = TokenService.revoke_jwt_token(user_id, jti)
+
+        if self.revoke_all:
+            success, message, status_code, count_revoked_tokens = TokenService.revoke_jwt_token(user_id)
+        else:
+            success, message, status_code, count_revoked_tokens = TokenService.revoke_jwt_token(user_id, jti)
         return Response({
             'success': success,
             'message': message,
@@ -230,42 +240,10 @@ class TokenRevokeAPIView(APIView):
         }, status=status_code)
 
 
-class TokenRevokeALLAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+class TokenRevokeAPIView(BaseTokenRevokeAPIView):
+    ...
 
-    def post(self, request, user_id:int):
-        if request.user.id != user_id:
-            return Response(
-                {
-                    'success': False,
-                    'message': f'Попытка отзыва токена(USER_ID#{request.user.id}) другого пользователя: ID#{user_id}!'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        refresh_token = request.data.get('refresh')
-        if not refresh_token:
-            return Response(
-                {
-                    'success': False,
-                    'message': 'Refresh токен обязателен!'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
 
-        payload, jti, user_id, exp, errors = TokenService.check_jwt_token(refresh_token, request.user)
+class TokenRevokeALLAPIView(BaseTokenRevokeAPIView):
+    revoke_all = True
 
-        if errors:
-            message, status_code = errors[0]
-            return Response(
-                {
-                    'success': False,
-                    'message': message,
-                },
-                status=status_code
-            )
-        success, message, status_code, count_revoked_tokens = TokenService.revoke_jwt_token(user_id)
-        return Response({
-            'success': success,
-            'message': message,
-            'count_revoked_tokens': count_revoked_tokens
-        }, status=status_code)
