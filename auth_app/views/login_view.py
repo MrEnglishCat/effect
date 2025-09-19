@@ -1,0 +1,73 @@
+from datetime import datetime, UTC
+
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.auth import authenticate
+from auth_app.utils import TokenService
+
+
+from drf_yasg.utils import swagger_auto_schema  # TODO сделать нормально описания
+from drf_yasg import openapi
+class LoginAPIView(APIView):
+    """
+    endpoint для аутентификации пользователя POST
+    """
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="Вход по email и паролю. Получение токенов",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_EMAIL),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_PASSWORD),
+            },
+            required=['email', 'password']
+        ),
+        responses={
+            200: "Успешный вход",
+            401: "Неверные учетные данные"
+        }
+    )
+    def post(self, request):
+
+        if request.user.is_authenticated:
+            return Response({
+                'success': True,
+                'message': 'Вы уже авторизованы',
+                'user': {
+                    'id': request.user.id,
+                    'email': request.user.email,
+                },
+                'redirect_url': '/dashboard/'  # к примеру. можно указать url по которому фронт сделает редирект
+            }, status=status.HTTP_200_OK)
+
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        user = authenticate(email=email, password=password)  # TODO попробовать переделать на свою
+
+        if not user:
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Неверный email или пароль!'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        user.last_login = datetime.now(UTC)
+        user.save(update_fields=['last_login'])
+        access_token, refresh_token = TokenService.generate_jwt_tokens(user, ip_address=request.META.get("REMOTE_ADDR"),
+                                                                       user_agent=request.META.get("HTTP_USER_AGENT"))
+
+        return Response(
+            {
+                'success': True,
+                'access': access_token,
+                'refresh': refresh_token,
+                'message': 'Авторизация пройдена успешно!'
+            },
+            status=status.HTTP_201_CREATED
+        )
