@@ -1,10 +1,20 @@
+import os
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
-
 from django.db import models
-
+from hashlib import pbkdf2_hmac
 
 class CustomUserManager(BaseUserManager):
+
+
+    # def set_password(self, raw_password):
+    #     self._password = raw_password
+    #
+    #     salt = os.urandom(32)
+    #     hasher = pbkdf2_hmac('sha256', raw_password.encode('utf-8'), salt, 100000)
+
+
 
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -12,6 +22,9 @@ class CustomUserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
+
+
+
         user.save(using=self._db)
         return user
 
@@ -26,10 +39,13 @@ class CustomUserManager(BaseUserManager):
 # class CustomUserModel(AbstractBaseUser, PermissionsMixin):
 class CustomUserModel(AbstractBaseUser):
     email = models.EmailField('e-mail пользователя', max_length=255, unique=True)
+
+    # TODO last_login не обновляется пофиксить
     first_name = models.CharField("Имя", max_length=150, blank=True, null=True)
     middle_name = models.CharField('Отчество', max_length=150, blank=True, null=True)
     last_name = models.CharField('Фамилия', max_length=150, blank=True, null=True)
     is_staff = models.BooleanField('Сотрудник', default=False)
+    is_superuser = models.BooleanField('Супервайзер', default=False)
     is_active = models.BooleanField('Активен', default=True)
     date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления профиля', auto_now=True)
