@@ -1,8 +1,10 @@
+from datetime import datetime, UTC
+
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
-from auth_app.models import CustomUserModel
-from auth_app.utils import decode_token
+from auth_app.models import CustomUserModel, BlacklistToken, IssueTokenModel
+from auth_app.utils import TokenService
 
 
 
@@ -16,15 +18,15 @@ class JWTAuthentication(BaseAuthentication):
             raise AuthenticationFailed('Невалидный JWT токен!')
 
         token = auth_header.replace('Bearer ', '')
-
-        payload = decode_token(token)
-
+        payload = TokenService.decode_jwt_token(token)
         if not payload:
             raise AuthenticationFailed('Невалидный или истёкший токен!')
 
+        if payload.get('type') == 'refresh':
+            raise AuthenticationFailed('Передан неверный тип токена!')
 
         try:
-            user = CustomUserModel.objects.get(pk=payload, is_active=True)
+            user = CustomUserModel.objects.get(pk=payload['user_id'], is_active=True)
         except CustomUserModel.DoesNotExist:
             raise AuthenticationFailed('Пользователь не найден!')
         else:
