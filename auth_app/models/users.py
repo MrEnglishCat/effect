@@ -39,8 +39,6 @@ class CustomUserManager(BaseUserManager):
 # class CustomUserModel(AbstractBaseUser, PermissionsMixin):
 class CustomUserModel(AbstractBaseUser):
     email = models.EmailField('e-mail пользователя', max_length=255, unique=True)
-
-    # TODO last_login не обновляется пофиксить
     first_name = models.CharField("Имя", max_length=150, blank=True, null=True)
     middle_name = models.CharField('Отчество', max_length=150, blank=True, null=True)
     last_name = models.CharField('Фамилия', max_length=150, blank=True, null=True)

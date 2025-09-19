@@ -199,15 +199,14 @@ class TokenService:
             )
             return None, None, None, None, errors
 
-        # TODO эта часть кода мешает если админы будут отзывать токены
-        # if request_user and user_id != request_user.id:
-        #     errors.append(
-        #         (
-        #             f'Попытка отзыва токена(USER_ID#{request_user.id}) другого пользователя: ID#{user_id}!',
-        #             status.HTTP_403_FORBIDDEN
-        #         )
-        #     )
-        #     return None, None, None, None, errors
+        if request_user and user_id != request_user.id:
+            errors.append(
+                (
+                    f'Попытка отзыва токена(USER_ID#{request_user.id}) другого пользователя: ID#{user_id}!',
+                    status.HTTP_403_FORBIDDEN
+                )
+            )
+            return None, None, None, None, errors
 
         try:
             jti = uuid.UUID(jti_str)

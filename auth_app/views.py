@@ -234,7 +234,7 @@ class BaseTokenRevokeAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        payload, jti, user_id, exp, errors = TokenService.check_jwt_token(refresh_token, request.user)
+        payload, jti, user_id, exp, errors = TokenService.check_jwt_token(refresh_token)
 
         if errors:
             message, status_code = errors[0]
