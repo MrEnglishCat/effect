@@ -1,4 +1,4 @@
-from .login_view import LoginAPIView
+from .login import LoginAPIView
 from .users import CustomUserAPIView, MyProfileAPIView
 from .register import RegisterAPIView
 from .logout import LogoutAPIView
