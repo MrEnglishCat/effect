@@ -37,15 +37,15 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUserModel(AbstractBaseUser):
-    email = models.EmailField('e-mail пользователя', max_length=255, unique=True)
-    first_name = models.CharField("Имя", max_length=150, blank=True, null=True)
-    middle_name = models.CharField('Отчество', max_length=150, blank=True, null=True)
-    last_name = models.CharField('Фамилия', max_length=150, blank=True, null=True)
-    is_staff = models.BooleanField('Сотрудник', default=False)
-    is_superuser = models.BooleanField('Супервайзер', default=False)
-    is_active = models.BooleanField('Активен', default=True)
-    date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True)
-    updated_at = models.DateTimeField('Дата обновления профиля', auto_now=True)
+    email = models.EmailField('e-mail пользователя', max_length=255, unique=True, help_text='email пользователя для идентификации.')
+    first_name = models.CharField("Имя", max_length=150, blank=True, null=True, help_text='Имя пользователя.')
+    middle_name = models.CharField('Отчество', max_length=150, blank=True, null=True, help_text='Отчество(если есть).')
+    last_name = models.CharField('Фамилия', max_length=150, blank=True, null=True, help_text='Фамилия(если есть).')
+    is_staff = models.BooleanField('Сотрудник', default=False, help_text='Указывает является ли пользователь персоналом.')
+    is_superuser = models.BooleanField('Супервайзер', default=False, help_text='Указывает является ли пользователь супервазером(админом).')
+    is_active = models.BooleanField('Активен', default=True, help_text='Указывает была ли учетная запись мягко удалена.')
+    date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True, help_text='Дара регистрации пользователя.')
+    updated_at = models.DateTimeField('Дата обновления профиля', auto_now=True, help_text='Дата обновления данных пользователяЫ.')
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'

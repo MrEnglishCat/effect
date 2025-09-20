@@ -6,7 +6,7 @@ from auth_app.views import *
 user_router = routers.DefaultRouter()
 user_router.register(r'users', CustomUserAPIView, basename='user')
 
-
+ # TODO проверить таблицы в README.md
 urlpatterns = [
     path('login/', LoginAPIView.as_view(), name='login'),
     path('logout/', LogoutAPIView.as_view(), name='logout'),

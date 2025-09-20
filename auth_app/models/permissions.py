@@ -3,8 +3,8 @@ from django.db import models
 
 class PermissionsModel(models.Model):
 
-    resource_id = models.ForeignKey('auth_app.ResoursesModel', on_delete=models.CASCADE)
-    action_id = models.ForeignKey('auth_app.ActionsModel', on_delete=models.CASCADE)
+    resource_id = models.ForeignKey('auth_app.ResoursesModel', on_delete=models.CASCADE, help_text='Значение ресурса в транзитной таблице.')
+    action_id = models.ForeignKey('auth_app.ActionsModel', on_delete=models.CASCADE, help_text='Значение действия в транзитной таблице.')
 
 
     class Meta:

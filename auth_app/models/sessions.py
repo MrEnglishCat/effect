@@ -6,11 +6,11 @@ from django.db import models
 
 class SessionsModel(models.Model):
     uuid = models.UUIDField('UUID сессии пользователя', unique=True, db_index=True, default=uuid.uuid4(),
-                            editable=False)
-    ip_address = models.GenericIPAddressField('IP-адрес пользователя', blank=False, null=False)
-    created_at = models.DateTimeField('Дата создания сессии', auto_now_add=True)
-    expiries_at = models.DateTimeField('Дата истечения сессии')
-    user = models.ForeignKey('auth_app.CustomUserModel', related_name='sessions', on_delete=models.CASCADE)
+                            editable=False, help_text='uuid сессии пользователя.')
+    ip_address = models.GenericIPAddressField('IP-адрес пользователя', blank=False, null=False, help_text='IP-адрес пользователя из META запроса.')
+    created_at = models.DateTimeField('Дата создания сессии', auto_now_add=True, help_text='Дата создания учётной записи пользователя.')
+    expiries_at = models.DateTimeField('Дата истечения сессии', help_text='Дата истечения срока сессии.')
+    user = models.ForeignKey('auth_app.CustomUserModel', related_name='sessions', on_delete=models.CASCADE, help_text='Поле для связи с пользователем.')
 
     class Meta:
         verbose_name = 'Сессия'
