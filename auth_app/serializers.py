@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from auth_app.models import CustomUserModel
-
+from auth_app.models import CustomUserModel, IssueTokenModel
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -30,4 +29,10 @@ class RegisterCustomUserSerializer(serializers.ModelSerializer):
 
 class LoginCustomUserSerializer(RegisterCustomUserSerializer):
     ...
+
+class ActiveSessionTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueTokenModel
+        exclude = ('is_revoked', 'revoked_at', 'issued_at', 'user')
+
 
