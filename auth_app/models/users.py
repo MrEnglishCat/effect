@@ -36,7 +36,6 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
-# class CustomUserModel(AbstractBaseUser, PermissionsMixin):
 class CustomUserModel(AbstractBaseUser):
     email = models.EmailField('e-mail пользователя', max_length=255, unique=True)
     first_name = models.CharField("Имя", max_length=150, blank=True, null=True)
