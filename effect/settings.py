@@ -153,4 +153,4 @@ JWT_SECRET_KEY = b'\x10W/\x12\xd5\xe0\x80\x91#\x1b\xce\x1fb\xd9hE7\xd76f\xeb$\x8
 JWT_ALGORITHM = 'HS256'
 JWT_ACCESS_TOKEN_EXPIRATION = 900  # секунд!!! равняется 15 минутам
 JWT_REFRESH_TOKEN_EXPIRATION = 30  # дней
-# JWT_REFRESH_TOKEN_EXPIRATION = 30  # seconds
+JWT_DECODE_OPTIONS = {"verify_signature": False}
