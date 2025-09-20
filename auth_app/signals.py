@@ -3,8 +3,7 @@ from datetime import UTC, datetime
 from django.db import transaction, IntegrityError
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from auth_app.models import CustomUserModel, IssueTokenModel, BlacklistToken
-from auth_app.utils import TokenService
+from auth_app.models import CustomUserModel, BlacklistToken
 
 
 @receiver(pre_save, sender=CustomUserModel)

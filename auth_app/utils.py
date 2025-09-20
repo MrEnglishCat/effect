@@ -1,7 +1,5 @@
 import uuid
-from copy import deepcopy
 from datetime import datetime, timedelta, UTC
-from os import access
 from typing import Optional
 
 import jwt
