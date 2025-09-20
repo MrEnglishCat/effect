@@ -7,9 +7,10 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from auth_app.utils import TokenService
 
-
 from drf_yasg.utils import swagger_auto_schema  # TODO сделать нормально описания
 from drf_yasg import openapi
+
+
 class LoginAPIView(APIView):
     """
     endpoint для аутентификации пользователя POST
@@ -37,11 +38,13 @@ class LoginAPIView(APIView):
             return Response({
                 'success': True,
                 'message': 'Вы уже авторизованы',
-                'user': {
-                    'id': request.user.id,
-                    'email': request.user.email,
-                },
-                'redirect_url': '/dashboard/'  # к примеру. можно указать url по которому фронт сделает редирект
+                'data': {
+                    'user': {
+                        'id': request.user.id,
+                        'email': request.user.email,
+                    },
+                    'redirect_url': '/dashboard/'  # к примеру. можно указать url по которому фронт сделает редирект
+                }
             }, status=status.HTTP_200_OK)
 
         email = request.data.get('email')
@@ -53,7 +56,7 @@ class LoginAPIView(APIView):
             return Response(
                 {
                     'success': False,
-                    'error': 'Неверный email или пароль!'
+                    'message': 'Неверный email или пароль!'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
@@ -65,9 +68,11 @@ class LoginAPIView(APIView):
         return Response(
             {
                 'success': True,
-                'access': access_token,
-                'refresh': refresh_token,
-                'message': 'Авторизация пройдена успешно!'
+                'message': 'Авторизация пройдена успешно!',
+                'data': {
+                    'access': access_token,
+                    'refresh': refresh_token,
+                }
             },
             status=status.HTTP_201_CREATED
         )
