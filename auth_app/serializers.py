@@ -4,7 +4,7 @@ from auth_app.models import CustomUserModel, IssueTokenModel
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(write_only=True, max_length=128, required=False)
+    password2 = serializers.CharField(help_text="Поле для повтора пароля, проверка на идентичность.", write_only=True, max_length=128, required=False)
 
     class Meta:
         model = CustomUserModel
@@ -13,11 +13,18 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},  # Пароль не возвращается в ответе
         }
 
+    def validate_email(self, value):
+        if self.instance and self.instance.email != value:
+            raise serializers.ValidationError("Email нельзя изменить!")
+        return value
+
     def validate(self, data):
         password = data.get('password')
         password2 = data.pop('password2', None)
+        if not password2:
+            raise serializers.ValidationError("Повторный пароль обязателен!")
         if password != password2:
-            raise serializers.ValidationError("Пароли не совпадают")
+            raise serializers.ValidationError("Пароли не совпадают!")
         return data
 
 
@@ -41,7 +48,7 @@ class RegisterCustomUserSerializer(serializers.ModelSerializer):
         password = data.get('password')
         password2 = data.pop('password2', None)
         if password != password2:
-            raise serializers.ValidationError("Пароли не совпадают")
+            raise serializers.ValidationError("Пароли не совпадают!")
         return data
 
 
