@@ -72,7 +72,7 @@ class RefreshTokenAPIView(APIView):
             )
         access_token, refresh_token, errors = TokenService.reset_jwt_refresh_token(refresh_token, request.user)
         if errors:
-            success, message, status_code = errors[0]
+            message, status_code = errors[0]
             return Response(
                 {
                     'success': False,
