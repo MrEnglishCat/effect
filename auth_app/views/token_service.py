@@ -71,10 +71,9 @@ class RefreshTokenAPIView(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        access_token, refresh_token, errors = TokenService.reset_jwt_tokens(refresh_token, request.user, ip_address=request.META.get('REMOTE_ADDR'), user_agent=request.META.get('HTTP_USER_AGENT'))
+        access_token, refresh_token, errors = TokenService.reset_jwt_refresh_token(refresh_token, request.user)
         if errors:
-            message, status_code = errors[0]
+            success, message, status_code = errors[0]
             return Response(
                 {
                     'success': False,

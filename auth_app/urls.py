@@ -23,7 +23,7 @@ urlpatterns = [
 
     # path('token/revoke/<int:user_id>/', AdminTokenRevokeAPIView.as_view(), name='admin_token_revoke'),  # Заморозил. Не нашел для чего применить.
     path('token/revoke_all/<int:user_id>/', AdminTokenRevokeALLAPIView.as_view(), name='admin_token_revoke_all'),
-
+    # TODO нужен эндпоинт для получения списка активных сессий(одна сессия одна запись в issueJWT
     path('me/', MyProfileAPIView.as_view({'get': 'list'}), name='me'),
     path('', include(user_router.urls), name='users'),
 

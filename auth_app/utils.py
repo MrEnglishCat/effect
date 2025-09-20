@@ -37,6 +37,7 @@ class TokenService:
     def generate_refresh_token(cls, user, ip_address=None, user_agent=None, **kwargs):
         jti = str(uuid.uuid4())
         expiret_at = datetime.now(UTC) + timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRATION)
+        # expiret_at = datetime.now(UTC) + timedelta(seconds=settings.JWT_REFRESH_TOKEN_EXPIRATION)
         payload = {
             'user_id': user.id,
             'iat': int(datetime.now(UTC).timestamp()),
@@ -73,9 +74,38 @@ class TokenService:
         )
 
     @classmethod
-    def decode_jwt_token(cls, token):
+    def decode_jwt_token(cls, token: str, options: dict = None) -> dict | None:
+        """
+        Декодирует токен в paylod(для получения полезных данных из токена)
+        :param token: сам токен
+        :param options: опции для метода decode в jwt (основное назначение
+                        подавление исключения ExpiredSignatureError -
+                        связанного с истекшим токеном)
+        :return: словарь с payload - токена. или None в случае ошибки
+        """
+
+        kwargs = {
+            'key': settings.JWT_SECRET_KEY,
+            'algorithms': settings.JWT_ALGORITHM,
+        }
+
+        if options:
+            kwargs.update(
+                {
+                    'options': options,
+                }
+            )
         try:
-            payload = jwt.decode(token, key=settings.JWT_SECRET_KEY, algorithms=settings.JWT_ALGORITHM)
+            payload = jwt.decode(
+                token,
+                **kwargs,
+            )
+            # payload = jwt.decode(
+            #     token,
+            #     key=settings.JWT_SECRET_KEY,
+            #     algorithms=settings.JWT_ALGORITHM,
+            #
+            # )
             return payload
 
         except jwt.ExpiredSignatureError:
@@ -147,35 +177,34 @@ class TokenService:
 
         return success, message, status_code, count_revoked_tokens
 
+    @staticmethod
+    def __is_expired_token(token_expires_at: int) -> bool:
+        """
+        Пока что нужен только в методе reset_jwt_refresh_token - для обновления даты отзыва
+        в таблицах и добавления токена в balcklist
+        :param token_expires_at:
+        :return:
+        """
+        if datetime.fromtimestamp(token_expires_at, UTC) < datetime.now(UTC):
+            return True
+        return False
+
     @classmethod
-    def reset_jwt_tokens(cls, request_token, user, **kwargs):
+    def reset_jwt_refresh_token(cls, request_token:str, user):
+        """
 
-        payload, jti, user_id, exp, errors = cls.check_jwt_token(request_token, user)
-
+        :param request_token:
+        :param user:
+        :return:
+        """
+        payload, jti, user_id, exp, errors = cls.check_jwt_token(request_token, user, options={"verify_signature": False})
         if errors:
             return None, None, errors
 
-        if datetime.fromtimestamp(exp, UTC) < datetime.now(UTC):
-            tokens_to_revoke = IssueTokenModel.objects.filter(jti=jti, user_id=user_id).select_for_update()
-            for token in tokens_to_revoke:
-                try:
-                    BlacklistToken.objects.create(
-                        jti=token.jti,
-                        user_id=token.user_id,
-                        expires_at=token.expiries_at,
-                    )
-                except Exception as e:
-                    print(f"Ошибка при создании BlacklistToken для jti={token.jti}: {e}!")
-
-            tokens_to_revoke.update(
-                last_used_at=datetime.now(UTC),
-                is_revoked=True,
-                revoked_at=datetime.now(UTC),
-
-            )
-            return None, None, (
-                f'Refresh-токен невалиден!\nТокен: {jti}  отозван!\nПройдите повторно авторизацию(логин и пароль)!'
-            )
+        if cls.__is_expired_token(exp):
+            success, message, status_code, count_revoked_tokens = cls.revoke_jwt_token(user_id, jti)
+            message = f"{message} Refresh-токен невалиден(TTL)! Токен: {jti}  отозван! Пройдите повторно авторизацию(логин и пароль)!'"
+            return None, None, ((success, message, status_code),)
 
         IssueTokenModel.objects.filter(jti=jti, user_id=user_id).update(
             last_used_at=datetime.now(UTC),
@@ -184,22 +213,44 @@ class TokenService:
         access_token = cls.generate_access_token(user)
         return access_token, request_token, None
 
+    @classmethod
+    def revoke_if_expired(cls, *update_date, **base_filter):
+        tokens_to_revoke = IssueTokenModel.objects.filter(**base_filter).select_for_update()
+        if tokens_to_revoke.count() == 0:
+            return False, 'Нет активных токенов для отзыва.', status.HTTP_200_OK, 0
 
+        count_error_revoke_tokens = 0
 
+        for token in tokens_to_revoke:
+            try:
+                BlacklistToken.objects.create(
+                    jti=token.jti,
+                    user_id=token.user_id,
+                    expires_at=token.expiries_at,
+                )
+            except Exception as e:
+                count_error_revoke_tokens += 1
+                print(f"Ошибка при создании BlacklistToken для jti={token.jti}: {e}!")
+
+        count_revoked_tokens = tokens_to_revoke.update(
+            is_revoked=True,
+            revoked_at=datetime.now(UTC),
+            last_used_at=datetime.now(UTC)
+        )
 
     @classmethod
-    def check_jwt_token(cls, request_token, request_user=None):
+    def check_jwt_token(cls, request_token, request_user=None, **kwargs):
         """
         Проверяет refresh-токен и возвращает payload, jti и ошибки.
         Если request_user передан — проверяет, что токен принадлежит пользователю.
         :param request_token:
         :param request_user: применяется при проверках токена НЕ админами(is_staff, is_superuser)
+        :param **kwargs: использую для получения options для метода decode_jwt_token
         :return: payload, jti, errors
         """
         errors = []
 
-        payload = cls.decode_jwt_token(request_token)
-
+        payload = cls.decode_jwt_token(request_token, options=kwargs.pop('options', None) if kwargs else None)
         if not payload:
             errors.append(
                 (
@@ -208,8 +259,6 @@ class TokenService:
                 )
             )
             return None, None, None, None, errors
-
-
 
         # Т. к. пока что метод используется только для валидации refresh токенов
         if payload.get('type') != 'refresh':
