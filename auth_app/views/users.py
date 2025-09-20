@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, \
+    CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from auth_app.models import CustomUserModel
-from auth_app.permissions import CanEditUserFieldsPermission, DeleteUserModelPermission
+from auth_app.permissions import CanEditUserFieldsPermission, DeleteUserModelPermission, PostUserModelPermission
 from auth_app.serializers import CustomUserSerializer, MyProfileSerializer
 
 
@@ -30,7 +31,6 @@ from auth_app.serializers import CustomUserSerializer, MyProfileSerializer
 # TODO при выставлении is_active=False нужно что бы отзывались все активные токены
 
 
-
 class MyProfileAPIView(ReadOnlyModelViewSet):
     serializer_class = MyProfileSerializer
     permission_classes = (IsAuthenticated,)
@@ -47,6 +47,7 @@ class CustomUserAPIView(
     ListModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
+    CreateModelMixin,
     DestroyModelMixin,
 ):
     """
@@ -56,7 +57,12 @@ class CustomUserAPIView(
     """
     serializer_class = CustomUserSerializer
 
-    permission_classes = (IsAuthenticated, CanEditUserFieldsPermission, DeleteUserModelPermission)
+    permission_classes = (
+        IsAuthenticated,
+        CanEditUserFieldsPermission,
+        DeleteUserModelPermission,
+        PostUserModelPermission
+    )
 
     def get_object(self):
         if self.request.user.is_staff or self.request.user.is_superuser:
@@ -76,5 +82,3 @@ class CustomUserAPIView(
         elif self.request.user.is_staff:
             return CustomUserModel.objects.all().exclude(is_superuser=True)
         return CustomUserModel.objects.filter(id=self.request.user.id)
-
-

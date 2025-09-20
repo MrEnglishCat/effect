@@ -24,10 +24,19 @@ class CanEditUserFieldsPermission(BasePermission):
 
 
 class DeleteUserModelPermission(BasePermission):
-    message = f'Удаление записи из БД доступно только админам!'
+    message = f'Удаление записи пользователя из БД доступно только админам!'
 
     def has_permission(self, request, view):
         if request.method == 'DELETE':
             return request.user.is_superuser
+
+        return True
+
+class PostUserModelPermission(BasePermission):
+    message = f'Добавление записи пользователя в БД доступно только админам!'
+
+    def has_permission(self, request, view):
+        if request.method == 'POST':
+            return request.user.is_superuser or request.user.is_staff
 
         return True
