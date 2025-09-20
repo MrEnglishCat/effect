@@ -9,7 +9,6 @@ from auth_app.serializers import RegisterCustomUserSerializer
 from auth_app.utils import TokenService
 
 
-
 class RegisterAPIView(APIView):
     """
     endpoint для регистрации пользователя POST
@@ -30,15 +29,19 @@ class RegisterAPIView(APIView):
             return Response(
                 {
                     'success': True,
-                    'access': access_token,
-                    'refresh': refresh_token,
-                    'message': 'Регистрация прошла успешно!'
+                    'message': 'Регистрация прошла успешно!',
+                    'data': {
+                        'access': access_token,
+                        'refresh': refresh_token,
+                    }
                 },
                 status=status.HTTP_201_CREATED
             )
         else:
             return Response({
                 'success': False,
-                'error': serializer.errors,
-                'message': 'Невалидные данные для регистрации!'
+                'message': 'Невалидные данные для регистрации!',
+                'data':{
+                    'error': serializer.errors
+                },  # TODO может быть переименовать в data
             }, status=status.HTTP_400_BAD_REQUEST)
