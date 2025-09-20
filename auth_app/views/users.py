@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
 from auth_app.models import CustomUserModel
 from auth_app.serializers import CustomUserSerializer, MyProfileSerializer
@@ -17,9 +18,13 @@ class MyProfileAPIView(ReadOnlyModelViewSet):
         return CustomUserModel.objects.filter(id=self.request.user.id)
 
 
-
-
-class CustomUserAPIView(ModelViewSet):
+class CustomUserAPIView(
+    GenericViewSet,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+):
     """
     endpoint Для работы с пользователем
     В зависимости от статуса is_staff=True or is_superuser=True - есть доступ ко всем учетным записям
@@ -27,6 +32,7 @@ class CustomUserAPIView(ModelViewSet):
     """
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticated,)
+
 
     def get_object(self):
         if self.request.user.is_staff or self.request.user.is_superuser:
@@ -46,4 +52,3 @@ class CustomUserAPIView(ModelViewSet):
         elif self.request.user.is_staff:
             return CustomUserModel.objects.all().exclude(is_superuser=True)
         return CustomUserModel.objects.filter(id=self.request.user.id)
-
