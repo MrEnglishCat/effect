@@ -5,17 +5,16 @@ from rest_framework.views import APIView
 
 from auth_app.utils import TokenService
 
-from .base import BaseTokenRevokeAPIView
-
-
+from .base import BaseTokenRevokeAPIView, BaseSessionAPIView
 
 __all__ = [
     'TokenRevokeAPIView',
     'TokenRevokeALLAPIView',
     'AdminTokenRevokeALLAPIView',
-    'RefreshTokenAPIView'
+    'RefreshTokenAPIView',
+    'MySessionsAPIView',
+    'AdminSessionsAPIView',
 ]
-
 
 
 class TokenRevokeAPIView(BaseTokenRevokeAPIView):
@@ -60,7 +59,6 @@ class AdminTokenRevokeALLAPIView(BaseTokenRevokeAPIView):
 
 class RefreshTokenAPIView(APIView):
 
-
     def post(self, request):
 
         refresh_token = request.data.get('refresh')
@@ -86,16 +84,44 @@ class RefreshTokenAPIView(APIView):
         return Response(
             {
                 'success': True,
-                'access': access_token,
-                'refresh': refresh_token,
-                'message': 'Токены обновлены!'
+                'message': 'Токены обновлены!',
+                'data': {
+                    'access': access_token,
+                    'refresh': refresh_token,
+                }
             },
             status=status.HTTP_201_CREATED
         )
 
-class MySessionsAPIView(APIView):
+class MySessionsAPIView(BaseSessionAPIView):
+    """
+        Позволяет посмотреть сессии текущего пользователя.
+    """
+    ...
 
-    permission_classes = (IsAuthenticated,)
+class AdminSessionsAPIView(BaseSessionAPIView):
+    """
+        Позволяет посмотреть сессии любого указанного пользователя.
+        Для админов.
+    """
 
-    def get(self,request):
-        ...
+    def get_target_user_id(self, request, *args, **kwargs):
+        """
+        Возвращает ID пользователя, чьи сессии нужно посмотреть.
+        Можно получить сессии любых пользователей
+        Для пользователей с is_staff=True, is_superuser=True.
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return kwargs.get('user_id')
+
+    def can_view_sessions(self, request, target_user_id):
+        """
+        Проверяет, может ли текущий пользователь посмотреть сессии target_user_id.
+        :param request:
+        :param target_user_id: пользователь сессии которого нужно просмотреть
+        :return:
+        """
+        return request.user.is_staff or request.user.is_superuser
