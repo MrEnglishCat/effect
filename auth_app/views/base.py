@@ -1,10 +1,9 @@
-from django.conf import settings
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from auth_app.models import IssueTokenModel, CustomUserModel
+from auth_app.models import IssueTokenModel
 from auth_app.serializers import ActiveSessionTokenSerializer, CustomUserSerializer
 from auth_app.utils import TokenService
 

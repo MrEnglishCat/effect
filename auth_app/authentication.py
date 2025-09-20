@@ -1,10 +1,8 @@
-from datetime import datetime, UTC
-
 from rest_framework import status
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
-from auth_app.models import CustomUserModel, BlacklistToken, IssueTokenModel
+from auth_app.models import CustomUserModel
 from auth_app.utils import TokenService
 
 

@@ -1,5 +1,3 @@
-from importlib import resources
-
 from django.db import models
 
 from auth_app.models.permissions import PermissionsModel

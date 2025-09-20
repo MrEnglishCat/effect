@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from auth_app.models import CustomUserModel
 from auth_app.permissions import CanEditUserFieldsPermission, DeleteUserModelPermission
