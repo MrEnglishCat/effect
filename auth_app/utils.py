@@ -36,7 +36,7 @@ class TokenService:
     @classmethod
     def generate_refresh_token(cls, user, ip_address=None, user_agent=None, **kwargs):
         jti = str(uuid.uuid4())
-        expiret_at = datetime.now(UTC) + timedelta(seconds=settings.JWT_REFRESH_TOKEN_EXPIRATION)
+        expiret_at = datetime.now(UTC) + timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRATION)
         payload = {
             'user_id': user.id,
             'iat': int(datetime.now(UTC).timestamp()),
@@ -127,7 +127,8 @@ class TokenService:
 
         count_revoked_tokens = tokens_to_revoke.update(
             is_revoked=True,
-            revoked_at=datetime.now(UTC)
+            revoked_at=datetime.now(UTC),
+            last_used_at=datetime.now(UTC)
         )
 
         if jti is not None:
@@ -150,24 +151,49 @@ class TokenService:
     def reset_jwt_tokens(cls, request_token, user, **kwargs):
 
         payload, jti, user_id, exp, errors = cls.check_jwt_token(request_token, user)
+
         if errors:
             return None, None, errors
 
         if datetime.fromtimestamp(exp, UTC) < datetime.now(UTC):
-            # TODO генерация нового refresh token
-            ip_address = kwargs.pop('ip_address', None)
-            user_agent = kwargs.pop('user_agent', None)
-            request_token = cls.generate_refresh_token(user, ip_address=ip_address, user_agent=user_agent, **kwargs)
+            tokens_to_revoke = IssueTokenModel.objects.filter(jti=jti, user_id=user_id).select_for_update()
+            for token in tokens_to_revoke:
+                try:
+                    BlacklistToken.objects.create(
+                        jti=token.jti,
+                        user_id=token.user_id,
+                        expires_at=token.expiries_at,
+                    )
+                except Exception as e:
+                    print(f"Ошибка при создании BlacklistToken для jti={token.jti}: {e}!")
+
+            tokens_to_revoke.update(
+                last_used_at=datetime.now(UTC),
+                is_revoked=True,
+                revoked_at=datetime.now(UTC),
+
+            )
+            return None, None, (
+                f'Refresh-токен невалиден!\nТокен: {jti}  отозван!\nПройдите повторно авторизацию(логин и пароль)!'
+            )
+
+        IssueTokenModel.objects.filter(jti=jti, user_id=user_id).update(
+            last_used_at=datetime.now(UTC),
+        )
 
         access_token = cls.generate_access_token(user)
         return access_token, request_token, None
+
+
+
 
     @classmethod
     def check_jwt_token(cls, request_token, request_user=None):
         """
         Проверяет refresh-токен и возвращает payload, jti и ошибки.
         Если request_user передан — проверяет, что токен принадлежит пользователю.
-        :param token:
+        :param request_token:
+        :param request_user: применяется при проверках токена НЕ админами(is_staff, is_superuser)
         :return: payload, jti, errors
         """
         errors = []
@@ -183,6 +209,9 @@ class TokenService:
             )
             return None, None, None, None, errors
 
+
+
+        # Т. к. пока что метод используется только для валидации refresh токенов
         if payload.get('type') != 'refresh':
             errors.append(
                 (
