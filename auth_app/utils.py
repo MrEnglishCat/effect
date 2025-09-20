@@ -6,7 +6,7 @@ from typing import Optional
 
 import jwt
 from django.conf import settings
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from rest_framework import status
 
 from auth_app.models import IssueTokenModel, BlacklistToken
@@ -134,29 +134,32 @@ class TokenService:
                 base_filter['jti'] = jti_uuid
             except (ValueError, TypeError):
                 return False, 'Невалидный формат jti!', status.HTTP_400_BAD_REQUEST, 0
-        with transaction.atomic():
-            tokens_to_revoke = IssueTokenModel.objects.filter(**base_filter).select_for_update()
-            if tokens_to_revoke.count() == 0:
-                return False, 'Нет активных токенов для отзыва.', status.HTTP_200_OK, 0
+        try:
+            with transaction.atomic():
+                tokens_to_revoke = IssueTokenModel.objects.filter(**base_filter).select_for_update()
+                if tokens_to_revoke.count() == 0:
+                    return False, 'Нет активных токенов для отзыва.', status.HTTP_200_OK, 0
 
-            count_error_revoke_tokens = 0
+                count_error_revoke_tokens = 0
 
-            for token in tokens_to_revoke:
-                try:
-                    BlacklistToken.objects.create(
-                        jti=token.jti,
-                        user_id=token.user_id,
-                        expires_at=token.expiries_at,
-                    )
-                except Exception as e:
-                    count_error_revoke_tokens += 1
-                    print(f"Ошибка при создании BlacklistToken для jti={token.jti}: {e}!")
-            time_now = datetime.now(UTC)
-            count_revoked_tokens = tokens_to_revoke.update(
-                is_revoked=True,
-                revoked_at=time_now,
-                last_used_at=time_now
-            )
+                for token in tokens_to_revoke:
+                    try:
+                        BlacklistToken.objects.create(
+                            jti=token.jti,
+                            user_id=token.user_id,
+                            expires_at=token.expiries_at,
+                        )
+                    except Exception as e:
+                        count_error_revoke_tokens += 1
+                        print(f"Ошибка при создании BlacklistToken для jti={token.jti}: {e}!")
+                time_now = datetime.now(UTC)
+                count_revoked_tokens = tokens_to_revoke.update(
+                    is_revoked=True,
+                    revoked_at=time_now,
+                    last_used_at=time_now
+                )
+        except IntegrityError:
+            pass
 
         if jti is not None:
             if count_revoked_tokens > 0:
