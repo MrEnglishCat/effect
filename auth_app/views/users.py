@@ -4,7 +4,31 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet
 
 from auth_app.models import CustomUserModel
+from auth_app.permissions import CanEditUserFieldsPermission, DeleteUserModelPermission
 from auth_app.serializers import CustomUserSerializer, MyProfileSerializer
+
+
+# TODO  ему выдается запрашиваемый ресурс.
+#  + Если по входящему запросу не удается определить залогиненного пользователя, выдается ошибка 401.
+#  Если пользователь определен, но запрашиваемый ресурс ему не доступен 403 ошибка — Forbidden.
+#  	Регистрация: Ввод имени (фамилии, отчества), email, пароля, повтор
+#  пароля.
+#  	Удаление пользователя: Удаление аккаунта (мягкое) — пользователь инициирует удаление, происходит logout,
+#  пользователь больше не может залогиниться, но при этом в базе учетная
+#  запись остается со статусом
+#  is_active=False.
+#  *
+#  2. Система разграничения прав доступа.
+#   	Вы должны продумать и в текстовом файле или в REAME.md описать схему вашей структуры управления ограничениями доступа.
+#   	Реализованы соответствующие таблицы в БД.
+#   	Таблицы заполнены тестовыми данными для минимальной отработки приложения для демонстрации работающей системы.
+#   	Если пользователь имеет доступ к ресурсу по вышеописанным правилам, ему выдается запрашиваемый ресурс. Если по входящему запросу не удается определить залогиненного пользователя, выдается ошибка 401. Если пользователь определен, но запрашиваемый ресурс ему не доступен 403 ошибка — Forbidden.
+#   	Реализовать API с возможностью получения и изменения этих правил пользователю, имеющему роль администратора.
+#   3. Минимальные вымышленные объекты бизнес-приложения, к которым могла бы применяться созданная система.
+#   Таблицы в БД создавать не требуется. Можно просто написать Mock-View, которые по обращениям будут выдавать список потенциальных объектов или описанные выше ошибки.
+
+# TODO при выставлении is_active=False нужно что бы отзывались все активные токены
+
 
 
 class MyProfileAPIView(ReadOnlyModelViewSet):
@@ -31,8 +55,8 @@ class CustomUserAPIView(
     если False - то доступ только к своей.
     """
     serializer_class = CustomUserSerializer
-    permission_classes = (IsAuthenticated,)
 
+    permission_classes = (IsAuthenticated, CanEditUserFieldsPermission, DeleteUserModelPermission)
 
     def get_object(self):
         if self.request.user.is_staff or self.request.user.is_superuser:
@@ -52,3 +76,5 @@ class CustomUserAPIView(
         elif self.request.user.is_staff:
             return CustomUserModel.objects.all().exclude(is_superuser=True)
         return CustomUserModel.objects.filter(id=self.request.user.id)
+
+
