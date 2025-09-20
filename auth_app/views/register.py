@@ -43,5 +43,5 @@ class RegisterAPIView(APIView):
                 'message': 'Невалидные данные для регистрации!',
                 'data':{
                     'error': serializer.errors
-                },  # TODO может быть переименовать в data
+                },
             }, status=status.HTTP_400_BAD_REQUEST)

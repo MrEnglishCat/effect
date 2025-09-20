@@ -23,7 +23,6 @@ def get_old_is_active(sender, instance, **kwargs):
         except sender.DoesNotExist:
             instance._old_is_active = None
 
-# TODO related_name - blacklist_tokens, issue_tokens
 
 
 @receiver(post_save, sender=CustomUserModel)

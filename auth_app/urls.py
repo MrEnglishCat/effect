@@ -12,7 +12,7 @@ urlpatterns = [
     path('logout/', LogoutAPIView.as_view(), name='logout'),
     path('register/', RegisterAPIView.as_view(), name='register'), # rabotaet
 
-    path('token/refresh/', RefreshTokenAPIView.as_view(), name='token_refresh'),  # TODO сделать рефреш апи
+    path('token/refresh/', RefreshTokenAPIView.as_view(), name='token_refresh'),
 
     path('token/revoke/', TokenRevokeAPIView.as_view(), name='token_revoke'),
     path('token/revoke_all/', TokenRevokeALLAPIView.as_view(), name='token_revoke_all'),
