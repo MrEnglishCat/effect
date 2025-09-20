@@ -10,7 +10,7 @@ class LogoutAPIView(APIView):
     """
     Разлогинивает пользователя и отзывает токен
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         """

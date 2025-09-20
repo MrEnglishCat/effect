@@ -14,7 +14,7 @@ class LoginAPIView(APIView):
     """
     endpoint для аутентификации пользователя POST
     """
-    permission_classes = [AllowAny]
+    permission_classes = (AllowAny,)
 
     @swagger_auto_schema(
         operation_description="Вход по email и паролю. Получение токенов",

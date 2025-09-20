@@ -8,7 +8,7 @@ from auth_app.serializers import CustomUserSerializer, MyProfileSerializer
 
 class MyProfileAPIView(ReadOnlyModelViewSet):
     serializer_class = MyProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self):
         return self.request.user
@@ -26,7 +26,7 @@ class CustomUserAPIView(ModelViewSet):
     если False - то доступ только к своей.
     """
     serializer_class = CustomUserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self):
         if self.request.user.is_staff or self.request.user.is_superuser:
