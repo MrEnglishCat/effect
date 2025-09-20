@@ -6,6 +6,7 @@ from typing import Optional
 
 import jwt
 from django.conf import settings
+from django.db import transaction
 from rest_framework import status
 
 from auth_app.models import IssueTokenModel, BlacklistToken
@@ -15,11 +16,12 @@ class TokenService:
 
     @classmethod
     def generate_access_token(cls, user, **kwargs):
+        __time_now = datetime.now(UTC)
         jti = str(uuid.uuid4())
         payload = {
             'user_id': user.id,
-            'iat': int(datetime.now(UTC).timestamp()),
-            'exp': int((datetime.now(UTC) + timedelta(seconds=settings.JWT_ACCESS_TOKEN_EXPIRATION)).timestamp()),
+            'iat': int(__time_now.timestamp()),
+            'exp': int((__time_now + timedelta(seconds=settings.JWT_ACCESS_TOKEN_EXPIRATION)).timestamp()),
             'jti': jti,
             'type': 'access',
 
@@ -36,11 +38,11 @@ class TokenService:
     @classmethod
     def generate_refresh_token(cls, user, ip_address=None, user_agent=None, **kwargs):
         jti = str(uuid.uuid4())
-        expiret_at = datetime.now(UTC) + timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRATION)
-        # expiret_at = datetime.now(UTC) + timedelta(seconds=settings.JWT_REFRESH_TOKEN_EXPIRATION)
+        time_now = datetime.now(UTC)
+        expiret_at = time_now + timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRATION)
         payload = {
             'user_id': user.id,
-            'iat': int(datetime.now(UTC).timestamp()),
+            'iat': int(time_now.timestamp()),
             'exp': int(expiret_at.timestamp()),
             'jti': jti,
             'type': 'refresh',
@@ -132,29 +134,29 @@ class TokenService:
                 base_filter['jti'] = jti_uuid
             except (ValueError, TypeError):
                 return False, 'Невалидный формат jti!', status.HTTP_400_BAD_REQUEST, 0
+        with transaction.atomic():
+            tokens_to_revoke = IssueTokenModel.objects.filter(**base_filter).select_for_update()
+            if tokens_to_revoke.count() == 0:
+                return False, 'Нет активных токенов для отзыва.', status.HTTP_200_OK, 0
 
-        tokens_to_revoke = IssueTokenModel.objects.filter(**base_filter).select_for_update()
-        if tokens_to_revoke.count() == 0:
-            return False, 'Нет активных токенов для отзыва.', status.HTTP_200_OK, 0
+            count_error_revoke_tokens = 0
 
-        count_error_revoke_tokens = 0
-
-        for token in tokens_to_revoke:
-            try:
-                BlacklistToken.objects.create(
-                    jti=token.jti,
-                    user_id=token.user_id,
-                    expires_at=token.expiries_at,
-                )
-            except Exception as e:
-                count_error_revoke_tokens += 1
-                print(f"Ошибка при создании BlacklistToken для jti={token.jti}: {e}!")
-
-        count_revoked_tokens = tokens_to_revoke.update(
-            is_revoked=True,
-            revoked_at=datetime.now(UTC),
-            last_used_at=datetime.now(UTC)
-        )
+            for token in tokens_to_revoke:
+                try:
+                    BlacklistToken.objects.create(
+                        jti=token.jti,
+                        user_id=token.user_id,
+                        expires_at=token.expiries_at,
+                    )
+                except Exception as e:
+                    count_error_revoke_tokens += 1
+                    print(f"Ошибка при создании BlacklistToken для jti={token.jti}: {e}!")
+            time_now = datetime.now(UTC)
+            count_revoked_tokens = tokens_to_revoke.update(
+                is_revoked=True,
+                revoked_at=time_now,
+                last_used_at=time_now
+            )
 
         if jti is not None:
             if count_revoked_tokens > 0:
@@ -192,6 +194,8 @@ class TokenService:
         :param user:
         :return:
         """
+
+
         payload, jti, user_id, exp, errors = cls.check_jwt_token(request_token, user,
                                                                  options=settings.JWT_DECODE_OPTIONS)
         if errors:
@@ -202,45 +206,12 @@ class TokenService:
             message = f"{message} Refresh-токен невалиден(TTL)! Токен: {jti}  отозван! Пройдите повторно авторизацию(логин и пароль)!'"
             return None, None, ((success, message, status_code),)
 
-        IssueTokenModel.objects.filter(jti=jti, user_id=user_id).update(
-            last_used_at=datetime.now(UTC),
+        time_now = datetime.now(UTC)
+        user.issue_tokens.filter(is_revoked=False, jti=jti).update(
+            last_used_at=time_now,
         )
-
         access_token = cls.generate_access_token(user)
         return access_token, request_token, None
-
-    @classmethod
-    def revoke_if_expired(cls, *update_date, **base_filter):
-        """
-        ПОПЫТКА ЗАМЕНИТЬ ЧАСТЬ ПОВТОРЯЮЩЕГОСЯ КОДА ДЛЯ ОТЗЫВА ТОКЕНОВ
-        Используется в reset_jwt_refresh_token
-        141 - 162 строки кода
-        :param update_date:
-        :param base_filter:
-        :return:
-        """
-        tokens_to_revoke = IssueTokenModel.objects.filter(**base_filter).select_for_update()
-        if tokens_to_revoke.count() == 0:
-            return False, 'Нет активных токенов для отзыва.', status.HTTP_200_OK, 0
-
-        count_error_revoke_tokens = 0
-
-        for token in tokens_to_revoke:
-            try:
-                BlacklistToken.objects.create(
-                    jti=token.jti,
-                    user_id=token.user_id,
-                    expires_at=token.expiries_at,
-                )
-            except Exception as e:
-                count_error_revoke_tokens += 1
-                print(f"Ошибка при создании BlacklistToken для jti={token.jti}: {e}!")
-
-        count_revoked_tokens = tokens_to_revoke.update(
-            is_revoked=True,
-            revoked_at=datetime.now(UTC),
-            last_used_at=datetime.now(UTC)
-        )
 
     @classmethod
     def check_jwt_token(cls, request_token, request_user=None, **kwargs):
@@ -279,7 +250,6 @@ class TokenService:
         exp = payload.get('exp')
 
         if not all([jti_str, user_id, exp]):
-            # if not all(((key in ('jti', 'exp', 'user_id') for key in payload))):  # альтернативный вариант
             errors.append(
                 (
                     'Нет необходимых данных в токене!',
