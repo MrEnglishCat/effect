@@ -19,10 +19,11 @@ class MyProfileSerializer(CustomUserSerializer):
 class RegisterCustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUserModel
-        fields = ('email', 'password')
+        fields = ('email', 'password', 'first_name', 'last_name', 'middle_name')
         extra_kwargs = {
             'email': {'required': True},
-            'password': {'required': True}
+            'password': {'required': True},
+
         }
 
 
