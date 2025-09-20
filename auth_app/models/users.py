@@ -4,7 +4,6 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from hashlib import pbkdf2_hmac
-# TODO дописать help_text к полям моделей
 class CustomUserManager(BaseUserManager):
 
 
