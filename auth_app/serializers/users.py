@@ -3,6 +3,14 @@ from rest_framework import serializers
 from auth_app.models import CustomUserModel, IssueTokenModel
 
 
+
+__all__ = [
+    'CustomUserSerializer',
+    'MyProfileSerializer',
+    'RegisterCustomUserSerializer',
+    'LoginCustomUserSerializer',
+]
+
 class CustomUserSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(help_text="Поле для повтора пароля, проверка на идентичность.", write_only=True, max_length=128, required=False)
 
@@ -71,10 +79,3 @@ class RegisterCustomUserSerializer(serializers.ModelSerializer):
 
 class LoginCustomUserSerializer(RegisterCustomUserSerializer):
     ...
-
-class ActiveSessionTokenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = IssueTokenModel
-        exclude = ('is_revoked', 'revoked_at', 'issued_at', 'user')
-
-
