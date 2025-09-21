@@ -22,7 +22,7 @@ class IssueTokenModel(models.Model):
         db_index=True,
         help_text='Дата когда токен был сформирован.'
     )
-    expiries_at = models.DateTimeField(
+    expires_at = models.DateTimeField(
         'Срок действия',
         db_index=True,
         help_text='Дата когда завершается срок действия токена.'

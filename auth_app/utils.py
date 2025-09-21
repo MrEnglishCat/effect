@@ -37,11 +37,11 @@ class TokenService:
     def generate_refresh_token(cls, user, ip_address=None, user_agent=None, **kwargs):
         jti = str(uuid.uuid4())
         time_now = datetime.now(UTC)
-        expiret_at = time_now + timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRATION)
+        expires_at = time_now + timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRATION)
         payload = {
             'user_id': user.id,
             'iat': int(time_now.timestamp()),
-            'exp': int(expiret_at.timestamp()),
+            'exp': int(expires_at.timestamp()),
             'jti': jti,
             'type': 'refresh',
         }
@@ -49,7 +49,7 @@ class TokenService:
         IssueTokenModel.objects.create(
             jti=jti,
             user=user,
-            expiries_at=expiret_at,
+            expires_at=expires_at,
             ip_address=ip_address,
             user_agent=user_agent,
         )
@@ -145,7 +145,7 @@ class TokenService:
                         BlacklistToken.objects.create(
                             jti=token.jti,
                             user_id=token.user_id,
-                            expires_at=token.expiries_at,
+                            expires_at=token.expires_at,
                         )
                     except Exception as e:
                         count_error_revoke_tokens += 1

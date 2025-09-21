@@ -8,7 +8,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUserModel
-        exclude = ('last_login', 'date_joined')
+        exclude = ('last_login', 'date_joined', 'is_active')
         extra_kwargs = {
             'password': {'write_only': True},  # Пароль не возвращается в ответе
         }

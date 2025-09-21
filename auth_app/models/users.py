@@ -22,6 +22,8 @@ class CustomUserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
 
+        print(user.password)
+
 
 
         user.save(using=self._db)
@@ -40,7 +42,7 @@ class CustomUserModel(AbstractBaseUser):
     first_name = models.CharField("Имя", max_length=150, blank=True, null=True, help_text='Имя пользователя.')
     middle_name = models.CharField('Отчество', max_length=150, blank=True, null=True, help_text='Отчество(если есть).')
     last_name = models.CharField('Фамилия', max_length=150, blank=True, null=True, help_text='Фамилия(если есть).')
-    is_staff = models.BooleanField('Сотрудник', default=False, help_text='Указывает является ли пользователь персоналом.')
+    is_staff = models.BooleanField('Сотрудник', default=True, help_text='Указывает является ли пользователь персоналом.')
     is_superuser = models.BooleanField('Супервайзер', default=False, help_text='Указывает является ли пользователь супервазером(админом).')
     is_active = models.BooleanField('Активен', default=True, help_text='Указывает была ли учетная запись мягко удалена.')
     date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True, help_text='Дара регистрации пользователя.')

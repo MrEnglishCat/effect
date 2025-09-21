@@ -13,10 +13,8 @@ urlpatterns = [
     path('register/', RegisterAPIView.as_view(), name='register'), # rabotaet
 
     path('token/refresh/', RefreshTokenAPIView.as_view(), name='token_refresh'),
-
     path('token/revoke/', TokenRevokeAPIView.as_view(), name='token_revoke'),
     path('token/revoke_all/', TokenRevokeALLAPIView.as_view(), name='token_revoke_all'),
-
     # path('token/revoke/<int:user_id>/', AdminTokenRevokeAPIView.as_view(), name='admin_token_revoke'),  # Заморозил. Не нашел для чего применить.
     path('token/revoke_all/<int:user_id>/', AdminTokenRevokeALLAPIView.as_view(), name='admin_token_revoke_all'),
 

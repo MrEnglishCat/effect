@@ -41,7 +41,7 @@ def check_new_is_active(sender, instance, created, **kwargs):
                     BlacklistToken(
                         jti=token.jti,
                         user_id=token.user_id,
-                        expires_at=token.expiries_at,
+                        expires_at=token.expires_at,
                         blacklist_at=__time_now
                     )
                     for token in tokens_to_revoke
