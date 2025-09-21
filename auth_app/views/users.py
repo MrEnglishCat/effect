@@ -5,7 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from auth_app.models import CustomUserModel
-from auth_app.permissions import CanEditUserFieldsPermission, DeleteUserModelPermission, PostUserModelPermission
+# from auth_app.permissions import CanEditUserFieldsPermission, DeleteUserModelPermission, PostUserModelPermission
+from auth_app.permissions import *
 from auth_app.serializers import CustomUserSerializer, MyProfileSerializer
 
 

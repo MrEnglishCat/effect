@@ -1,5 +1,14 @@
 from rest_framework.permissions import BasePermission
 
+# from auth_app.models import permissions
+
+
+__all__ = [
+    'CanEditUserFieldsPermission',
+    'DeleteUserModelPermission',
+    'PostUserModelPermission',
+]
+
 
 class CanEditUserFieldsPermission(BasePermission):
     message = f'Редактирование полей is_staff & is_superuser доступно только админам!'
@@ -33,7 +42,7 @@ class DeleteUserModelPermission(BasePermission):
         return True
 
 class PostUserModelPermission(BasePermission):
-    message = f'Добавление записи пользователя в БД доступно только админам!'
+    message = f'Добавление записи пользователя в БД доступно только админам или сотрудникам!'
 
     def has_permission(self, request, view):
         if request.method == 'POST':
