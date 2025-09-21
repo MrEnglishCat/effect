@@ -21,13 +21,30 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def validate(self, data):
         password = data.get('password')
         password2 = data.pop('password2', None)
-        if not password2:
+
+        if password and not password2:
             raise serializers.ValidationError("Повторный пароль обязателен!")
-        if password != password2:
+        if password and password != password2:
             raise serializers.ValidationError("Пароли не совпадают!")
         return data
 
 
+    def create(self, validated_data):
+        return CustomUserModel.objects.create_user(**validated_data)
+
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+
+        if password:
+            instance.set_password(password)
+
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+        return instance
+
+#
 class MyProfileSerializer(CustomUserSerializer):
     ...
 
