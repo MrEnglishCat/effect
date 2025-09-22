@@ -14,7 +14,7 @@ main_router.register(r'actions', ActionsViewSet, basename='action')
 main_router.register('resourses', ResoursesAPIView, basename='resourse')
 main_router.register('session', SessionsViewSet, basename='session')
 
-# TODO проверить таблицы в README.md
+
 urlpatterns = [
     path('', include(main_router.urls), name='main_router'),
     path('login/', LoginAPIView.as_view(), name='login'),

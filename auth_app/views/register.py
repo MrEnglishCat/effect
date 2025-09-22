@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from auth_app.models import CustomUserModel
 from auth_app.serializers import RegisterCustomUserSerializer
-from auth_app.utils import TokenService
+from auth_app.utils import TokenService, SessionService
 
 
 class RegisterAPIView(APIView):
@@ -27,7 +27,9 @@ class RegisterAPIView(APIView):
                                                                                "HTTP_USER_AGENT"))
             user.last_login = datetime.now(UTC)
             user.save()
-            # user = serializer.save()  # TODO будет время переопределить в сериализаторе что бы хэшировался пароль
+
+            SessionService.create_session(request, user, datetime.now(UTC))
+
             return Response(
                 {
                     'success': True,

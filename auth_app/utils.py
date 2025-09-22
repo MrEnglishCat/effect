@@ -6,20 +6,47 @@ from typing import Optional
 import jwt
 from django.conf import settings
 from django.db import transaction, IntegrityError
+from django.http import HttpRequest
 from rest_framework import status
 
-from auth_app.models import IssueTokenModel, BlacklistToken
-
+from auth_app.models import IssueTokenModel, BlacklistToken, SessionsModel, CustomUserModel
+from auth_app.serializers.sessions import SessionSerializer
 
 
 class RequestMethods(Enum):
     # ['read', 'update', 'all', 'delete', 'create']
-    GET='read'
-    POST='create'
-    PUT='update'
-    PATCH='update'
-    DELETE='delete'
-    ALL='all'
+    GET = 'read'
+    POST = 'create'
+    PUT = 'update'
+    PATCH = 'update'
+    DELETE = 'delete'
+    ALL = 'all'
+
+
+class SessionService:
+
+    @classmethod
+    def create_session(cls, request: HttpRequest, user, _time_now) -> Optional[SessionsModel]:
+        ip_address = request.META.get("REMOTE_ADDR")
+        user_agent = request.META.get("HTTP_USER_AGENT")
+        user_id = user.id
+        print(ip_address, user_agent, user_id)
+        serializer = SessionSerializer(
+            data={
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "user": user_id,
+                "expires_at": _time_now
+            }
+        )
+        cls.check_session(request, user)
+        if serializer.is_valid():
+            SessionsModel.objects.create(**serializer.validated_data)
+
+    @classmethod
+    def check_session(cls, request: HttpRequest, user) -> Optional[SessionsModel]:
+        session = SessionsModel.objects.filter(user_id=user.id, is_active=True).update(is_active=False)
+
 
 class TokenService:
 
@@ -207,7 +234,6 @@ class TokenService:
         :return:
         """
 
-
         payload, jti, user_id, exp, errors = cls.check_jwt_token(request_token, user,
                                                                  options=settings.JWT_DECODE_OPTIONS)
         if errors:
@@ -309,7 +335,8 @@ class TokenService:
         if errors:
             return is_revoked, (payload, jti, user_id, exp, errors), None
 
-        if cls._is_expired_token(exp) or IssueTokenModel.objects.filter(jti=jti, user_id=user_id, is_revoked=True).exists():
+        if cls._is_expired_token(exp) or IssueTokenModel.objects.filter(jti=jti, user_id=user_id,
+                                                                        is_revoked=True).exists():
             success, message, status_code, count_revoked_tokens = cls.revoke_jwt_token(user_id, jti=jti)
 
             is_revoked = True

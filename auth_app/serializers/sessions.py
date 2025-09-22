@@ -11,8 +11,8 @@ class ActiveSessionTokenSerializer(serializers.ModelSerializer):
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SessionsModel
-        exclude = ('user',)
-        
+        # exclude = ('user',)
+        fields = '__all__'
 
 
 

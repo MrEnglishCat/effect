@@ -1,10 +1,12 @@
+from datetime import UTC, datetime
+
 from django.core.exceptions import ImproperlyConfigured
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from auth_app.utils import TokenService
+from auth_app.utils import TokenService, SessionService
 
 from .base import BaseTokenRevokeAPIView, BaseSessionAPIView
 
@@ -89,6 +91,7 @@ class RefreshTokenAPIView(APIView):
                 },
                 status=status_code
             )
+        SessionService.create_session(request, request.user, datetime.now(UTC))
 
         return Response(
             {

@@ -5,9 +5,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
-from auth_app.utils import TokenService
+from auth_app.utils import TokenService, SessionService
 
-from drf_yasg.utils import swagger_auto_schema  # TODO сделать нормально описания
+from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
@@ -51,7 +51,7 @@ class LoginAPIView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        user = authenticate(email=email, password=password)  # TODO попробовать переделать на свою
+        user = authenticate(email=email, password=password)
 
         if not user:
             return Response(
@@ -61,10 +61,12 @@ class LoginAPIView(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-        user.last_login = datetime.now(UTC)
+        _time_now = datetime.now(UTC)
+        user.last_login = _time_now
         user.save(update_fields=['last_login'])
         access_token, refresh_token = TokenService.generate_jwt_tokens(user, ip_address=request.META.get("REMOTE_ADDR"),
                                                                        user_agent=request.META.get("HTTP_USER_AGENT"))
+        SessionService.create_session(request, user, _time_now)
 
         return Response(
             {
