@@ -54,9 +54,9 @@ class CustomUserAPIView(
 
     permission_classes = (
         IsAuthenticated,
-        # CanEditUserFieldsPermission,
-        # DeleteUserModelPermission,
-        # PostUserModelPermission,
+        # CanEditUserFieldsPermission,  # использовал до того как разрешения заработали из базы данных
+        # DeleteUserModelPermission,  # использовал до того как разрешения заработали из базы данных
+        # PostUserModelPermission,  # использовал до того как разрешения заработали из базы данных
         DynamicResourcePermission
 
     )

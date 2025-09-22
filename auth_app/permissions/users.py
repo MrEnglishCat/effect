@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAdminUser
 
 # from auth_app.models import permissions
 
@@ -7,8 +7,17 @@ __all__ = [
     'CanEditUserFieldsPermission',
     'DeleteUserModelPermission',
     'PostUserModelPermission',
+    'IsAdminUser',
+    'IsSupervisor'
 ]
 
+class IsAdminUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_staff
+
+class IsSupervisor(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_superuser
 
 class CanEditUserFieldsPermission(BasePermission):
     message = f'Редактирование полей is_staff & is_superuser доступно только админам!'

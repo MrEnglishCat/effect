@@ -5,3 +5,4 @@ from .logout import LogoutAPIView
 from .token_service import *
 from .roles import RolesAPIView
 from .resourses import ResoursesAPIView
+from .session import SessionsViewSet

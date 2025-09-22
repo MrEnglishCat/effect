@@ -3,7 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from auth_app.models import ResourcesModel
 from auth_app.permissions.general import DeveleoperPermission
-from auth_app.serializers.resourses import ResoursesSerializer
+from auth_app.serializers.roles import ResoursesSerializer
 
 
 class ResoursesAPIView(ModelViewSet):

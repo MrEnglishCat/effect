@@ -12,6 +12,7 @@ main_router.register(r'users', CustomUserAPIView, basename='user')
 main_router.register(r'roles', RolesAPIView, basename='role')
 main_router.register(r'actions', ActionsViewSet, basename='action')
 main_router.register('resourses', ResoursesAPIView, basename='resourse')
+main_router.register('session', SessionsViewSet, basename='session')
 
 # TODO проверить таблицы в README.md
 urlpatterns = [
@@ -26,7 +27,7 @@ urlpatterns = [
     # path('token/revoke/<int:user_id>/', AdminTokenRevokeAPIView.as_view(), name='admin_token_revoke'),  # Заморозил. Не нашел для чего применить.
     path('token/revoke_all/<int:user_id>/', AdminTokenRevokeALLAPIView.as_view(), name='admin_token_revoke_all'),
 
-    path('me/get_sessions/', MySessionsAPIView.as_view(), name='get_my_sessions'),
+    path('me/get_sessions/', MySessionsAPIView.as_view(), name='get_my_sessions'),  # здесь имеются ввиду refresh токены
     path('me/get_sessions/<int:user_id>', AdminSessionsAPIView.as_view(), name='get_my_sessions'),
     path('me/', MyProfileAPIView.as_view({'get': 'list'}), name='me'),
 
