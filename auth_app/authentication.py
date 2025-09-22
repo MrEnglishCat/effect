@@ -11,6 +11,7 @@ class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
 
         auth_header = request.headers.get('Authorization')
+        refresh_token = request.data.get('refresh_token')
         if not auth_header:
             return None
 
@@ -19,11 +20,13 @@ class JWTAuthentication(BaseAuthentication):
 
         token = auth_header.replace('Bearer ', '')
         payload = TokenService.decode_jwt_token(token)
+
         if not payload:
             raise AuthenticationFailed('Невалидный или истёкший токен!', status.HTTP_401_UNAUTHORIZED)
 
-        if payload.get('type') == 'refresh':
-            raise AuthenticationFailed('Передан неверный тип токена!', status.HTTP_401_UNAUTHORIZED)
+        # убрал что бы можно было авторизацию пройти по рефреш токену, при обновлении аксесс
+        # if payload and  payload.get('type') == 'refresh':
+        #     raise AuthenticationFailed('Передан неверный тип токена!', status.HTTP_401_UNAUTHORIZED)
 
         try:
             user = CustomUserModel.objects.get(pk=payload['user_id'], is_active=True)
