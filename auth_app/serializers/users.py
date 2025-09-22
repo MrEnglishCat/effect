@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
-from auth_app.models import CustomUserModel, IssueTokenModel
-
-
+from auth_app.models import CustomUserModel, IssueTokenModel, RolesModel
 
 __all__ = [
     'CustomUserSerializer',
@@ -32,6 +30,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True},  # Пароль не возвращается в ответе
         }
+
+    def validate_add_roles(self, value):
+        if value:
+            existing_roles = RolesModel.objects.filter(id__in=value).count()
+            if existing_roles != len(value):
+                raise serializers.ValidationError("Некоторые роли не существуют!")
+        return value
 
     def validate_email(self, value):
         if self.instance and self.instance.email != value:
