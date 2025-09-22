@@ -8,7 +8,6 @@ class DeveleoperPermission(BasePermission):
         if request.method == 'GET':
             return True
 
-        # TODO тут добавить обработку на данные из таблицы пермишенов, с ресурсами
         return request.user.is_superuser
 
 class AdminPermission(BasePermission):
@@ -18,7 +17,6 @@ class AdminPermission(BasePermission):
         if request.method == 'GET':
             return True
 
-        # TODO тут добавить обработку на данные из таблицы пермишенов, с ресурсами
         return request.user.is_superuser or request.user.is_staff
 
 

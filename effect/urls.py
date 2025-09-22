@@ -22,7 +22,6 @@ from drf_yasg import openapi
 
 
 
-# TODO изменить описание и характеристики
 schema_view = get_schema_view(
     openapi.Info(
         title="Pet API authorization + authentication",
