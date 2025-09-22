@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timedelta, UTC
+from enum import Enum
 from typing import Optional
 
 import jwt
@@ -11,7 +12,14 @@ from auth_app.models import IssueTokenModel, BlacklistToken
 
 
 
-
+class RequestMethods(Enum):
+    # ['read', 'update', 'all', 'delete', 'create']
+    GET='read'
+    POST='create'
+    PUT='update'
+    PATCH='update'
+    DELETE='delete'
+    ALL='all'
 
 class TokenService:
 

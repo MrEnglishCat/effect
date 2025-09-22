@@ -2,7 +2,7 @@ from django.db.models import Prefetch
 from rest_framework.permissions import BasePermission
 
 from auth_app.models import CustomUserModel, RolesModel, PermissionsModel
-
+from auth_app.utils import RequestMethods
 
 class DynamicResourcePermission(BasePermission):
 
@@ -41,13 +41,41 @@ class DynamicResourcePermission(BasePermission):
             actions = set()
             for role in user.roles.all():
                 for permission in role.permissions.all():
-                    actions.add(permission.action.name)
+                    actions.add(permission.action.code_name)
 
             print(f"✅ Доступные действия: {list(actions)}")
-            # for action in actions:
-            #     print(action.code_name)
-            return len(actions) > 0
+            for action in actions:
+                print(action)
 
+
+
+            if actions:
+                view.actions = list(actions)
+                print('all' in view.actions, request.method)
+                # if 'all' in view.actions:
+                #     return True
+                request_methods = {
+                    RequestMethods.GET.name: RequestMethods.GET.value,
+                    RequestMethods.POST.name: RequestMethods.POST.value,
+                    RequestMethods.PUT.name: RequestMethods.PUT.value,
+                    RequestMethods.PATCH.name: RequestMethods.PATCH.value,
+                    RequestMethods.DELETE.name: RequestMethods.DELETE.value,
+                }
+                if request_methods.get(request.method, False) in view.actions:
+                    print("ASDADASD")
+                    return True
+                # match request.method:
+                #     case RequestMethods.GET.name:
+                #         print("HERE_GET")
+                #     case RequestMethods.POST.name:
+                #         print("HERE_POST")
+                #     case RequestMethods.PUT.name:
+                #         print("HERE_PUT")
+                #     case RequestMethods.PATCH.name:
+                #         print("HERE_PATCH")
+                #     case RequestMethods.DELETE.name:
+                #         print("HERE_DELETE")
+            return False
         except CustomUserModel.DoesNotExist:
             print("❌ Пользователь не найден")
             return False

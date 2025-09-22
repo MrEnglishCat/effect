@@ -8,4 +8,3 @@ class ActionsSerializer(serializers.ModelSerializer):
         model = ActionsModel
         fields = '__all__'
         read_only_fields = ('id',)
-

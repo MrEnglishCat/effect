@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
 from auth_app.models import ResourcesModel
+from auth_app.serializers import ActionsSerializer
 
-
-class ResoursesModelSerializer(serializers.ModelSerializer):
+class ResoursesSerializer(serializers.ModelSerializer):
+    actions = ActionsSerializer(many=True)
     class Meta:
         model = ResourcesModel
         fields = '__all__'

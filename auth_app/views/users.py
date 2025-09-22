@@ -26,7 +26,7 @@ from auth_app.serializers import CustomUserSerializer, MyProfileSerializer
 
 class MyProfileAPIView(ReadOnlyModelViewSet):
     serializer_class = MyProfileSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, DynamicResourcePermission)
 
     def get_object(self):
         return self.request.user
@@ -54,9 +54,11 @@ class CustomUserAPIView(
 
     permission_classes = (
         IsAuthenticated,
-        CanEditUserFieldsPermission,
-        DeleteUserModelPermission,
-        PostUserModelPermission
+        # CanEditUserFieldsPermission,
+        # DeleteUserModelPermission,
+        # PostUserModelPermission,
+        DynamicResourcePermission
+
     )
 
     def get_object(self):

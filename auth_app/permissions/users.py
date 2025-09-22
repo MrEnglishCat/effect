@@ -15,7 +15,6 @@ class CanEditUserFieldsPermission(BasePermission):
 
     def has_permission(self, request, view):
 
-        print(request.user, 'has_permission')
 
 
         if any((field in request.data for field in ('is_staff', 'is_superuser', ))):
