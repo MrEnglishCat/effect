@@ -1,0 +1,13 @@
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (1, 2, 1);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (2, 2, 3);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (3, 35, 1);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (4, 35, 3);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (5, 36, 1);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (6, 36, 3);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (7, 37, 1);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (8, 37, 3);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (9, 38, 1);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (10, 38, 3);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (11, 9, 2);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (12, 9, 1);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (13, 9, 3);

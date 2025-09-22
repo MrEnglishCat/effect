@@ -1,0 +1,11 @@
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (1, 'Пользователи', 'users', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (2, 'Роли', 'roles', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (3, 'Разрешения', 'permissions', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (4, 'Проекты', 'projects', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (5, 'Задачи', 'tasks', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (6, 'Документы', 'documents', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (7, 'Настройки', 'settings', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (8, 'Отчёты', 'reports', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (9, 'Оплаты', 'payments', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (10, 'Сессии', 'sessions', null);
+INSERT INTO auth_app_resourcesmodel (id, name, code_name, description) VALUES (11, 'Токены', 'tokens', null);
