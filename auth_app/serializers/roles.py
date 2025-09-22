@@ -3,6 +3,8 @@ from rest_framework import serializers
 from auth_app.models import RolesModel, PermissionsModel, ResourcesModel, ActionsModel
 
 
+# Цепочка сериализаторов ниже, помогает обработать запрос на получение всей информации по юзеру
+
 class ResoursesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourcesModel
