@@ -1,6 +1,16 @@
 from rest_framework.permissions import BasePermission
 
 
+class DeveleoperPermission(BasePermission):
+    message = "Работа с таблицей полей {fields} разрешено только админам!"
+
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            return True
+
+        # TODO тут добавить обработку на данные из таблицы пермишенов, с ресурсами
+        return request.user.is_superuser
+
 class AdminPermission(BasePermission):
     message = "Работа с таблицей полей {fields} разрешено только админам!"
 
@@ -18,7 +28,6 @@ class HasResourcePermission(BasePermission):
     """
 
     def has_permission(self, request, view):
-        # Получаем ресурс и действие из view
         resource_name = getattr(view, 'resource_name', None)
         action_name = self._get_action_name(request.method)
 
@@ -38,6 +47,5 @@ class HasResourcePermission(BasePermission):
         return mapping.get(method)
 
     def _check_permission(self, user_id, resource_name, action_name):
-        # Ваша логика проверки разрешений
         actions = get_user_permissions_for_resource(user_id, resource_name)
         return action_name in actions

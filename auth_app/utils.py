@@ -10,6 +10,16 @@ from rest_framework import status
 from auth_app.models import IssueTokenModel, BlacklistToken
 
 
+
+class HTTPMethods(Enum):
+    GET = 'GET'
+    POST = 'POST'
+    PUT = 'PUT'
+    DELETE = 'DELETE'
+    HEAD = 'HEAD'
+    OPTIONS = 'OPTIONS'
+
+
 class TokenService:
 
     @classmethod
