@@ -1,3 +1,7 @@
+from idlelib.query import Query
+
+from django.contrib.auth.models import Permission
+from django.db.models import Prefetch
 from rest_framework import status
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
@@ -27,6 +31,7 @@ class JWTAuthentication(BaseAuthentication):
         # убрал что бы можно было авторизацию пройти по рефреш токену, при обновлении аксесс
         # if payload and  payload.get('type') == 'refresh':
         #     raise AuthenticationFailed('Передан неверный тип токена!', status.HTTP_401_UNAUTHORIZED)
+
 
         try:
             user = CustomUserModel.objects.get(pk=payload['user_id'], is_active=True)

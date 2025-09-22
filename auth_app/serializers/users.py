@@ -9,6 +9,9 @@ __all__ = [
     'LoginCustomUserSerializer',
 ]
 
+from auth_app.serializers.roles import RolesSerializer
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(help_text="Поле для повтора пароля, проверка на идентичность.", write_only=True, max_length=128, required=False)
     remove_roles = serializers.ListField(
@@ -23,6 +26,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         required=False,
         help_text="Список ID ролей для добавления"
     )
+    roles = RolesSerializer(many=True, read_only=True)
 
     class Meta:
         model = CustomUserModel

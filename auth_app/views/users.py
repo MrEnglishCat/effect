@@ -48,6 +48,8 @@ class CustomUserAPIView(
     В зависимости от статуса is_staff=True or is_superuser=True - есть доступ ко всем учетным записям
     если False - то доступ только к своей.
     """
+    resource_name = 'users'
+    queryset = CustomUserModel.objects.all()
     serializer_class = CustomUserSerializer
 
     permission_classes = (

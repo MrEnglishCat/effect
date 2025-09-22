@@ -11,6 +11,7 @@ class LogoutAPIView(APIView):
     Разлогинивает пользователя и отзывает токен
     """
     permission_classes = (IsAuthenticated,)
+    resource_name = 'users'
 
     def post(self, request):
         """

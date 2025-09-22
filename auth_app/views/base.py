@@ -14,7 +14,7 @@ class BaseTokenRevokeAPIView(APIView):
     Параметр `revoke_all` определяет, отзывать один токен или все.
 
     """
-
+    resource_name = 'tokens'
     revoke_all = False
     permission_classes = (IsAuthenticated,)
 
@@ -106,6 +106,7 @@ class BaseTokenRevokeAPIView(APIView):
 
 class BaseSessionAPIView(APIView):
     permission_classes = (IsAuthenticated,)
+    resource_name = 'sessions'
 
     def get(self, request, *args, **kwargs):
         """

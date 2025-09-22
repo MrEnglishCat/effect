@@ -21,6 +21,7 @@ class TokenRevokeAPIView(BaseTokenRevokeAPIView):
     """
     Отзывает один refresh-токен (указанный в теле запроса).
     """
+
     ...
 
 

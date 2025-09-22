@@ -7,6 +7,8 @@ from auth_app.serializers.roles import RolesSerializer
 from auth_app.permissions import AdminPermission
 
 class RolesAPIView(ModelViewSet):
+
+    resource_name = 'roles'
     model = RolesModel
     queryset = RolesModel.objects.all()
     serializer_class = RolesSerializer

@@ -21,7 +21,7 @@ class ActionsModel(models.Model):
         help_text='Кодовое название действия, на английском. Используется в коде'
     )
     resource = models.ManyToManyField(
-        'auth_app.ResoursesModel',
+        'auth_app.ResourcesModel',
         related_name='actions',
         through=PermissionsModel,
         help_text='Ресурс с которым связано действие.'

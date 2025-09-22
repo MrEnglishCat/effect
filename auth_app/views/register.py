@@ -14,6 +14,8 @@ class RegisterAPIView(APIView):
     endpoint для регистрации пользователя POST
     """
     permission_classes = (AllowAny,)
+    resource_name = 'users'
+
 
     def post(self, request):
         serializer = RegisterCustomUserSerializer(data=request.data)

@@ -7,9 +7,9 @@ from auth_app.views.roles import RolesAPIView
 
 main_router = routers.DefaultRouter()
 main_router.register(r'users', CustomUserAPIView, basename='user')
-main_router.register(r'roles', RolesAPIView, basename='roles')
+main_router.register(r'roles', RolesAPIView, basename='role')
 main_router.register(r'actions', ActionsViewSet, basename='action')
-
+main_router.register('resourses', ResoursesAPIView, basename='resourse')
 
 # TODO проверить таблицы в README.md
 urlpatterns = [
