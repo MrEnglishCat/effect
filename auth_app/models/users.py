@@ -21,11 +21,6 @@ class CustomUserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-
-        print(user.password)
-
-
-
         user.save(using=self._db)
         return user
 
@@ -47,6 +42,9 @@ class CustomUserModel(AbstractBaseUser):
     is_active = models.BooleanField('Активен', default=True, help_text='Указывает была ли учетная запись мягко удалена.')
     date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True, help_text='Дара регистрации пользователя.')
     updated_at = models.DateTimeField('Дата обновления профиля', auto_now=True, help_text='Дата обновления данных пользователяЫ.')
+    roles = models.ManyToManyField('auth_app.RolesModel', related_name='users', help_text='Поле для связи роли с пользователями и конкретным пользователем.', blank=True, null=True)
+
+
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'

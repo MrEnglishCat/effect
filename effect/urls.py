@@ -25,11 +25,11 @@ from drf_yasg import openapi
 # TODO изменить описание и характеристики
 schema_view = get_schema_view(
     openapi.Info(
-        title="Snippets API",
+        title="Pet API authorization + authentication",
         default_version='v1',
-        description="Test description",
+        description="Effective API",
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
+        contact=openapi.Contact(email="mr.englishcat@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
