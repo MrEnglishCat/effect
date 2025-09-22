@@ -2,17 +2,18 @@ from django.urls import path, include
 from rest_framework import routers
 
 from auth_app.views import *
+from auth_app.views.actions import ActionsViewSet
 from auth_app.views.roles import RolesAPIView
 
-user_router = routers.DefaultRouter()
-user_router.register(r'users', CustomUserAPIView, basename='user')
+main_router = routers.DefaultRouter()
+main_router.register(r'users', CustomUserAPIView, basename='user')
+main_router.register(r'roles', RolesAPIView, basename='roles')
+main_router.register(r'actions', ActionsViewSet, basename='action')
 
-role_router = routers.DefaultRouter()
-role_router.register(r'roles', RolesAPIView, basename='roles')
 
 # TODO проверить таблицы в README.md
 urlpatterns = [
-    path('', include(user_router.urls), name='users'),
+    path('', include(main_router.urls), name='main_router'),
     path('login/', LoginAPIView.as_view(), name='login'),
     path('logout/', LogoutAPIView.as_view(), name='logout'),
     path('register/', RegisterAPIView.as_view(), name='register'),
@@ -27,6 +28,5 @@ urlpatterns = [
     path('me/get_sessions/<int:user_id>', AdminSessionsAPIView.as_view(), name='get_my_sessions'),
     path('me/', MyProfileAPIView.as_view({'get': 'list'}), name='me'),
 
-    path('roles/', include(role_router.urls), name='roles'),
 
 ]

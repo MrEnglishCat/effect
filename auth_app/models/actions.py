@@ -15,6 +15,11 @@ class ActionsModel(models.Model):
         null=True,
         blank=True,
         help_text='Описание действия.')
+    code_name = models.CharField(
+        max_length=100,
+        unique=True,
+        help_text='Кодовое название действия, на английском. Используется в коде'
+    )
     resource = models.ManyToManyField(
         'auth_app.ResoursesModel',
         related_name='actions',
