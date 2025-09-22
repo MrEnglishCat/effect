@@ -42,7 +42,7 @@ class CustomUserModel(AbstractBaseUser):
     is_active = models.BooleanField('Активен', default=True, help_text='Указывает была ли учетная запись мягко удалена.')
     date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True, help_text='Дара регистрации пользователя.')
     updated_at = models.DateTimeField('Дата обновления профиля', auto_now=True, help_text='Дата обновления данных пользователяЫ.')
-    roles = models.ManyToManyField('auth_app.RolesModel', related_name='users', help_text='Поле для связи роли с пользователями и конкретным пользователем.', blank=True, null=True)
+    roles = models.ManyToManyField('auth_app.RolesModel', related_name='users', help_text='Поле для связи роли с пользователями и конкретным пользователем.')
 
 
 

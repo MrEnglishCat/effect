@@ -11,3 +11,4 @@ INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_i
 INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (11, 9, 2);
 INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (12, 9, 1);
 INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (13, 9, 3);
+INSERT INTO auth_app_customusermodel_roles (id, customusermodel_id, rolesmodel_id) VALUES (14, 9, 4);

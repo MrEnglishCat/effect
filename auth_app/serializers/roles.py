@@ -7,7 +7,7 @@ class RolesSerializer(serializers.ModelSerializer):
     class Meta:
         model = RolesModel
         fields = '__all__'
-        read_only_fields = ('id',)
+        # read_only_fields = ('id',)
         # extra_kwargs = {
         #     'user': {'is_requare': False},
         # }

@@ -63,3 +63,4 @@ INSERT INTO auth_app_blacklisttoken (id, jti, blacklist_at, expires_at, user_id)
 INSERT INTO auth_app_blacklisttoken (id, jti, blacklist_at, expires_at, user_id) VALUES (63, '13a52f29a4c54096892d', '2025-09-22 00:34:24.352253', '2025-10-22 00:34:24.288420', 39);
 INSERT INTO auth_app_blacklisttoken (id, jti, blacklist_at, expires_at, user_id) VALUES (64, '0dcaa95c196e49c5b543', '2025-09-22 00:34:24.713391', '2025-10-22 00:34:24.679415', 40);
 INSERT INTO auth_app_blacklisttoken (id, jti, blacklist_at, expires_at, user_id) VALUES (65, 'e07feb54f9a24ddcac1c', '2025-09-22 00:34:25.081639', '2025-10-22 00:34:25.047516', 41);
+INSERT INTO auth_app_blacklisttoken (id, jti, blacklist_at, expires_at, user_id) VALUES (66, '97ed19036c2942d494a80aec967885d2', '2025-09-22 12:41:16.724496', '2025-10-22 12:41:16.694506', 9);

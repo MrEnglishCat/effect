@@ -1,3 +1,4 @@
+from django.core.exceptions import ImproperlyConfigured
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -15,6 +16,8 @@ __all__ = [
     'MySessionsAPIView',
     'AdminSessionsAPIView',
 ]
+
+from ..permissions import DynamicResourcePermission
 
 
 class TokenRevokeAPIView(BaseTokenRevokeAPIView):
@@ -60,6 +63,11 @@ class AdminTokenRevokeALLAPIView(BaseTokenRevokeAPIView):
 
 class RefreshTokenAPIView(APIView):
 
+    resource_name = 'tokens'
+    permission_classes = (IsAuthenticated, DynamicResourcePermission)
+
+
+
     def post(self, request):
 
         refresh_token = request.data.get('refresh')
@@ -94,11 +102,13 @@ class RefreshTokenAPIView(APIView):
             status=status.HTTP_201_CREATED
         )
 
+
 class MySessionsAPIView(BaseSessionAPIView):
     """
         Позволяет посмотреть сессии текущего пользователя.
     """
     ...
+
 
 class AdminSessionsAPIView(BaseSessionAPIView):
     """
