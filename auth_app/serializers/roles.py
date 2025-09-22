@@ -3,7 +3,6 @@ from rest_framework import serializers
 from auth_app.models import RolesModel, PermissionsModel, ResourcesModel, ActionsModel
 
 
-
 class ResoursesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourcesModel
@@ -19,13 +18,11 @@ class ActionsSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 class PermissionSerializer(serializers.ModelSerializer):
-    # resource = ResoursesSerializer()
     action = ActionsSerializer()
 
     class Meta:
         model = PermissionsModel
         fields = '__all__'
-
 
 class RolesSerializer(serializers.ModelSerializer):
     permissions = PermissionSerializer(many=True)
