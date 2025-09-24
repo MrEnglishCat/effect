@@ -15,6 +15,17 @@ main_router.register('resourses', ResoursesAPIView, basename='resourse')
 main_router.register('session', SessionsViewSet, basename='session')
 
 
+# TODO add session to
+#   сделать сессию зависимой от выданного refresh токена
+#   login
+#   logout
+#   register
+#   token_refresh
+#   token_revoke
+#   token_revoke_all
+#   admin_token_revoke_all
+#
+
 urlpatterns = [
     path('', include(main_router.urls), name='main_router'),
     path('login/', LoginAPIView.as_view(), name='login'),
