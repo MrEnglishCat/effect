@@ -16,6 +16,13 @@ class IssueTokenModel(models.Model):
         verbose_name='Пользователь',
         help_text='Пользователь которому был выдан токен.'
     )
+    session = models.ForeignKey(
+        'auth_app.SessionsModel',
+        on_delete=models.CASCADE,
+        related_name='issue_tokens',
+        verbose_name='Сессия',
+        help_text='Сессии пользователя. Завязанные на refresh токене.'
+    )
     issued_at = models.DateTimeField(
         'Дата выдачи',
         auto_now_add=True,
