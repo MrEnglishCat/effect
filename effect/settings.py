@@ -87,23 +87,23 @@ WSGI_APPLICATION = 'effect.wsgi.application'
 
 
 # Для тестов SqLite
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'effect',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'effect',
+#         'USER': 'postgres',
+#         'PASSWORD': 'postgres',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -163,7 +163,23 @@ REST_FRAMEWORK = {
 
 # JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', secrets.token_bytes(64))
 JWT_SECRET_KEY = b'\x10W/\x12\xd5\xe0\x80\x91#\x1b\xce\x1fb\xd9hE7\xd76f\xeb$\x8bi\xc5\xaa\xa4\x90+\xbfi\xd0M\xc3\xf4(`/\x82CR\xc0Q\xfa1Om\xcd\xda>b,U\xb4\xe7\xccz\x8a\xd8\xb4\xb7\x06\rn'
+'''
+JWT_SECRET_KEY находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
+'''
+
 JWT_ALGORITHM = 'HS256'
+'''
+JWT_ALGORITHM находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
+'''
+
 JWT_ACCESS_TOKEN_EXPIRATION = 900  # секунд!!! равняется 15 минутам
+'''
+JWT_ACCESS_TOKEN_EXPIRATION находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
+'''
 JWT_REFRESH_TOKEN_EXPIRATION = 30  # дней
+'''
+JWT_REFRESH_TOKEN_EXPIRATION находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
+'''
+
+
 JWT_DECODE_OPTIONS = {"verify_signature": False}
