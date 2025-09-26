@@ -21,6 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-4*z$6=02i=k9i@c$9mzy7k@ac_3e6=vp!-b0hn5b22p9z!8#jg'
+'''
+SECRET_KEY находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
+'''
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -150,7 +154,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.SessionAuthentication',
         'auth_app.authentication.JWTAuthentication',
     ],
-    'DEFAULT_THROTTLE_RATES': {
+    'DEFAULT_THROTTLE_RATES': {  # TODO реализовать механизм тротлинга, ограничение на количество запросов
         'login': '5/min',
         'refresh': '10/min',
         'anon': '100/day',

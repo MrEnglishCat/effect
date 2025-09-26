@@ -33,9 +33,6 @@ class SessionService:
         print(ip_address, user_agent, user_id)
         serializer = SessionSerializer(
             data={
-                "ip_address": ip_address,
-                "user_agent": user_agent,
-                "user": user_id,
                 "expires_at": _time_now
             }
         )
@@ -84,14 +81,19 @@ class TokenService:
             'type': 'refresh',
         }
 
+        session = SessionsModel.objects.create(
+            expires_at=expires_at,
+        )
+
+
         IssueTokenModel.objects.create(
             jti=jti,
             user=user,
+            session=session,
             expires_at=expires_at,
             ip_address=ip_address,
             user_agent=user_agent,
         )
-
         if kwargs:
             payload.update(kwargs)
 

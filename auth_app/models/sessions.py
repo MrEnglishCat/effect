@@ -21,7 +21,7 @@ class SessionsModel(models.Model):
         verbose_name_plural = 'Сессии'
 
     def __str__(self):
-        return f"Сессия {self.uuid} для {self.user.email}"
+        return f"Сессия {self.uuid}."
 
     def save(self, *args, **kwargs):
 

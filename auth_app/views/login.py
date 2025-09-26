@@ -66,7 +66,6 @@ class LoginAPIView(APIView):
         user.save(update_fields=['last_login'])
         access_token, refresh_token = TokenService.generate_jwt_tokens(user, ip_address=request.META.get("REMOTE_ADDR"),
                                                                        user_agent=request.META.get("HTTP_USER_AGENT"))
-        SessionService.create_session(request, user, _time_now)
 
         return Response(
             {

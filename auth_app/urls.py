@@ -14,16 +14,25 @@ main_router.register(r'actions', ActionsViewSet, basename='action')
 main_router.register('resourses', ResoursesAPIView, basename='resourse')
 main_router.register('session', SessionsViewSet, basename='session')
 
-
 # TODO add session to
 #   сделать сессию зависимой от выданного refresh токена
-#   login
+#   +login
 #   logout
 #   register
 #   token_refresh
 #   token_revoke
 #   token_revoke_all
 #   admin_token_revoke_all
+#   Нет Mock-View для бизнес-объектов - только системные сущности. Неполная система управления
+#   правами через API - только чтение, нет изменения. Вьюхи делают слишком
+#   много (проверка прав + бизнес-логика).
+#   Нет инструкций и механизмов для загрузки тестовых данных.
+#
+#
+#
+#
+#
+#
 #
 
 urlpatterns = [
@@ -41,6 +50,5 @@ urlpatterns = [
     path('me/get_sessions/', MySessionsAPIView.as_view(), name='get_my_sessions'),  # здесь имеются ввиду refresh токены
     path('me/get_sessions/<int:user_id>', AdminSessionsAPIView.as_view(), name='get_my_sessions'),
     path('me/', MyProfileAPIView.as_view({'get': 'list'}), name='me'),
-
 
 ]
