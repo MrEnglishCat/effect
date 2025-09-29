@@ -15,6 +15,7 @@ main_router.register('resourses', ResoursesAPIView, basename='resourse')
 main_router.register('session', SessionsViewSet, basename='session')
 
 # TODO add session to
+#   ПЕРЕДЕЛАТЬ ТАБЛИЦЫ sessions, issue_tokens, users - связи между ними
 #   сделать сессию зависимой от выданного refresh токена
 #   +login
 #   logout
@@ -24,8 +25,8 @@ main_router.register('session', SessionsViewSet, basename='session')
 #   token_revoke_all
 #   admin_token_revoke_all
 #   Нет Mock-View для бизнес-объектов - только системные сущности. Неполная система управления
-#   правами через API - только чтение, нет изменения. Вьюхи делают слишком
-#   много (проверка прав + бизнес-логика).
+#   правами через API - только чтение, нет изменения.
+#   Вынести в middleware - Вьюхи делают слишком много (проверка прав + бизнес-логика).
 #   Нет инструкций и механизмов для загрузки тестовых данных.
 #
 #
