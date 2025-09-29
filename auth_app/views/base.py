@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from auth_app.models import IssueTokenModel
 from auth_app.permissions import DynamicResourcePermission
+from auth_app.permissions.general import DeveleoperPermission
 from auth_app.serializers import ActiveSessionTokenSerializer, CustomUserSerializer
 from auth_app.utils import TokenService
 
@@ -17,7 +18,7 @@ class BaseTokenRevokeAPIView(APIView):
     """
     resource_name = 'tokens'
     revoke_all = False
-    permission_classes = (IsAuthenticated, DynamicResourcePermission)
+    permission_classes = (IsAuthenticated, DeveleoperPermission, DynamicResourcePermission, )
 
     def post(self, request, *args, **kwargs):
         """
