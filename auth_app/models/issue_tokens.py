@@ -46,17 +46,17 @@ class IssueTokenModel(models.Model):
         blank=True,
         help_text='Дата когда был отзыван токен'
     )
-    ip_address = models.GenericIPAddressField(
-        'IP-адрес',
-        null=True,
-        blank=True,
-        help_text='IP-адрес указанный в META запроса.'
-    )
-    user_agent = models.TextField(
-        'user-Agent',
-        blank=True,
-        help_text='User-Agent браузера.'
-    )
+    # ip_address = models.GenericIPAddressField(
+    #     'IP-адрес',
+    #     null=True,
+    #     blank=True,
+    #     help_text='IP-адрес указанный в META запроса.'
+    # )
+    # user_agent = models.TextField(
+    #     'user-Agent',
+    #     blank=True,
+    #     help_text='User-Agent браузера.'
+    # )
     last_used_at = models.DateTimeField(
         'Последнее использование',
         null=True,
