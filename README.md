@@ -521,7 +521,8 @@ admin_role.permissions.add(permission)
   "success": false,
   "message": "Невалидные данные для регистрации!",
   "data": {
-    "error": []  // все собранные ошибки сериализатором
+    "error": []
+    // все собранные ошибки сериализатором находятся в errors
   }
 ```
 </div>
