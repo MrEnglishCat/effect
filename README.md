@@ -612,10 +612,12 @@ admin_role.permissions.add(permission)
 }
 ```
 
+</div>
+
 >[!NOTE]
 > ```message``` - сообщение об успешно отозванном токене, если не было ошибок
 > ```count_revoked_tokens``` - количество отозванных токенов
-</div>
+
 
 <div style="background-color: #2b2b2b; border-left: 4px solid #d64d4d; padding: 10px; margin: 10px 0; color: #a9b7c6; font-family: monospace, sans-serif;">
 
@@ -673,10 +675,13 @@ admin_role.permissions.add(permission)
   }
 }
 ```
+
+</div>
+
 >[!NOTE]
 > ```message``` - сообщение об успешно отозванном токене, если не было ошибок
 > ```count_revoked_tokens``` - количество отозванных токенов
-</div>
+
 
 <div style="background-color: #2b2b2b; border-left: 4px solid #d64d4d; padding: 10px; margin: 10px 0; color: #a9b7c6; font-family: monospace, sans-serif;">
 
@@ -744,7 +749,7 @@ admin_role.permissions.add(permission)
 
 ### `GET /api/auth/me/get_sessions/<int:user_id>`
 
-**[ADMIN] Получение списка активных сессий пользователя по ID**
+**[!ADMIN] Получение списка активных сессий пользователя по ID**
 
 **Ответ (200):**
 
