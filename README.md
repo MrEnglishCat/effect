@@ -417,14 +417,14 @@ admin_role.permissions.add(permission)
 
 ```json
 {
-  'success': true,
-  'message': 'Вы уже авторизованы',
-  'data': {
-    'user': {
-      'id': request.user.id,
-      'email': request.user.email
+  "success": true,
+  "message": 'Вы уже авторизованы',
+  "data": {
+    "user": {
+      "id": request.user.id,
+      "email": request.user.email
     },
-    'redirect_url': '/dashboard/'
+    "redirect_url": '/dashboard/'
   }
 }
 ```
