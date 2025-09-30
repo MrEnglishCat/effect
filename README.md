@@ -524,7 +524,7 @@ admin_role.permissions.add(permission)
     "error": []
 }
 ```
-> все собранные ошибки сериализатором находятся в errors
+> все собранные сериализатором ошибки находятся в ```data.error```
 </div>
 
 
@@ -558,11 +558,11 @@ admin_role.permissions.add(permission)
 ### ✅ **Ответ (201):**
 ```json
 {
-  'success': True,
-  'message': 'Токены обновлены!',
-  'data': {
-    'access': access_token,
-    'refresh': refresh_token
+  "success": true,
+  "message": "Токены обновлены!",
+  "data": {
+    "access": "eyJhbGciOiJalkjzLKJASLdjALDSJI6IkpXVCJ9...",
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   }
 }
 ```
@@ -574,10 +574,11 @@ admin_role.permissions.add(permission)
 ### ❌ Ошибка (401 и прочие))
 ```json
 {
-  'success': False,
-  'message': 'Refresh токен обязателен!'  // сообщение и код ошибки зависит от того что было неверно
+  "success": false,
+  "message": "Refresh токен обязателен!"  
 }
 ```
+> сообщение и код ошибки зависит от того что было неверно
 </div>
 
 
@@ -604,13 +605,16 @@ admin_role.permissions.add(permission)
 ### ✅ **Ответ (200):**
 ```json
 {
-  'success': success,
-  'message': message,  // сообщение об успешно отозванном токене, если не было ошибок
-  'data': {
-    'count_revoked_tokens': count_revoked_tokens  // количество отозванных токенов
+  "success": true,
+  "message": "Какое-то сообщение для пользователя...",  
+  "data": {
+    "count_revoked_tokens": 10  
   }
 }
 ```
+
+> ```message``` - сообщение об успешно отозванном токене, если не было ошибок
+> ```count_revoked_tokens``` - количество отозванных токенов
 </div>
 
 <div style="background-color: #2b2b2b; border-left: 4px solid #d64d4d; padding: 10px; margin: 10px 0; color: #a9b7c6; font-family: monospace, sans-serif;">
@@ -618,8 +622,8 @@ admin_role.permissions.add(permission)
 ### ❌ Ошибка (400)
 ```json
 {
-  'success': False,
-  'message': 'Refresh токен обязателен!'
+  "success": false,
+  "message": "Refresh токен обязателен!"
 }
 ```
 </div>
@@ -629,9 +633,8 @@ admin_role.permissions.add(permission)
 ### ❌ Ошибка (403)
 ```json
 {
-  'success': False,
-  'message': f
-  'Недостаточно прав для отзыва токенов пользователя ID#{target_user_id}'
+  "success": false,
+  "message": "Недостаточно прав для отзыва токенов пользователя ID#133"
 }
 ```
 </div>
@@ -663,13 +666,15 @@ admin_role.permissions.add(permission)
 ### ✅ **Ответ (200):**
 ```json
 {
-  'success': success,
-  'message': message,  // сообщение об успешно отозванном токене, если не было ошибок
-  'data': {
-    'count_revoked_tokens': count_revoked_tokens  // количество отозванных токенов
+  "success": true,
+  "message": "Какое-то сообщение для пользователя...",  
+  "data": {
+    "count_revoked_tokens": 123  
   }
 }
 ```
+> ```message``` - сообщение об успешно отозванном токене, если не было ошибок
+> ```count_revoked_tokens``` - количество отозванных токенов
 </div>
 
 <div style="background-color: #2b2b2b; border-left: 4px solid #d64d4d; padding: 10px; margin: 10px 0; color: #a9b7c6; font-family: monospace, sans-serif;">
@@ -677,8 +682,8 @@ admin_role.permissions.add(permission)
 ### ❌ Ошибка (400)
 ```json
 {
-  'success': False,
-  'message': 'Refresh токен обязателен!'
+  "success": false,
+  "message": "Refresh токен обязателен!"
 }
 ```
 </div>
@@ -688,8 +693,8 @@ admin_role.permissions.add(permission)
 ### ❌ Ошибка (403)
 ```json
 {
-  'success': False,
-  'message': f  'Недостаточно прав для отзыва токенов пользователя ID#{target_user_id}'
+  "success": false,
+  "message": "Недостаточно прав для отзыва токенов пользователя ID#144"
 }
 ```
 </div>
