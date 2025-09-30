@@ -381,7 +381,7 @@ admin_role.permissions.add(permission)
 
 **Вход пользователя**
 
-<div style="background-color: #2b2b2b; border-left: 4px solid #347cb3; padding: 10px; margin: 10px 0; color: #a9b7c6;">
+<div style="background-color:#2b2b2b;border-left:4px solid #347cb3;padding:10px;margin:10px 0; color:#a9b7c6;">
 
 ### ℹ️ Запрос
 
