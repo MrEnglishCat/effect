@@ -61,6 +61,7 @@ PPS:
 | `/resourses/` | `ResoursesAPIView`  | `resourse`               | Управление ресурсами           |
 | `/session/`   | `SessionsViewSet`   | `session`                | Управление сессиями            |
 
+> [!NOTE]
 > Все маршруты поддерживают стандартные HTTP-методы: `GET`, `POST`, `PUT`, `PATCH`, `DELETE` (в зависимости от
 > реализации ViewSet).
 
