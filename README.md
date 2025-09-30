@@ -523,9 +523,10 @@ admin_role.permissions.add(permission)
     "error": []
 }
 ```
-> все собранные сериализатором ошибки находятся в ```data.error```
 </div>
 
+>[!NOTE]
+> все собранные сериализатором ошибки находятся в ```data.error```
 
 
 
@@ -577,8 +578,11 @@ admin_role.permissions.add(permission)
   "message": "Refresh токен обязателен!"  
 }
 ```
-> сообщение и код ошибки зависит от того что было неверно
 </div>
+
+>[!NOTE]
+> сообщение и код ошибки зависит от того что было неверно
+
 
 
 
@@ -615,8 +619,8 @@ admin_role.permissions.add(permission)
 </div>
 
 >[!NOTE]
-> ```message``` - сообщение об успешно отозванном токене, если не было ошибок
-> ```count_revoked_tokens``` - количество отозванных токенов
+> -```message``` - сообщение об успешно отозванном токене, если не было ошибок
+> -```count_revoked_tokens``` - количество отозванных токенов
 
 
 <div style="background-color: #2b2b2b; border-left: 4px solid #d64d4d; padding: 10px; margin: 10px 0; color: #a9b7c6; font-family: monospace, sans-serif;">
@@ -679,8 +683,8 @@ admin_role.permissions.add(permission)
 </div>
 
 >[!NOTE]
-> ```message``` - сообщение об успешно отозванном токене, если не было ошибок
-> ```count_revoked_tokens``` - количество отозванных токенов
+> -```message``` - сообщение об успешно отозванном токене, если не было ошибок
+> -```count_revoked_tokens``` - количество отозванных токенов
 
 
 <div style="background-color: #2b2b2b; border-left: 4px solid #d64d4d; padding: 10px; margin: 10px 0; color: #a9b7c6; font-family: monospace, sans-serif;">
