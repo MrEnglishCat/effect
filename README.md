@@ -437,8 +437,8 @@ admin_role.permissions.add(permission)
 
 ```json
 {
-    'success': False,
-    'message': 'Неверный email или пароль!'
+    "success": false,
+    "message": "Неверный email или пароль!"
 }
 
 ```
@@ -503,7 +503,7 @@ admin_role.permissions.add(permission)
 ```json
 {
   "success": true,
-  "message": 'Регистрация прошла успешно!',
+  "message": "Регистрация прошла успешно!",
   "data": {
     "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -518,10 +518,10 @@ admin_role.permissions.add(permission)
 ### ❌ Ответ (400 - невалидные данные)
 ```json
 {
-  'success': False,
-  'message': 'Невалидные данные для регистрации!',
-  'data': {
-    'error': serializer.errors  // все собранные ошибки сериализатором
+  "success": false,
+  "message": "Невалидные данные для регистрации!",
+  "data": {
+    "error": []  // все собранные ошибки сериализатором
   }
 ```
 </div>
