@@ -381,7 +381,7 @@ admin_role.permissions.add(permission)
 
 **Вход пользователя**
 
-<div style="background-color: #2b2b2b; border-left: 4px solid #347cb3; padding: 10px; margin: 10px 0; color: #a9b7c6; font-family: monospace, sans-serif;">
+<div style="background-color: #2b2b2b; border-left: 4px solid #347cb3; padding: 10px; margin: 10px 0; color: #a9b7c6;">
 
 ### ℹ️ Запрос
 
@@ -889,7 +889,7 @@ admin_role.permissions.add(permission)
 
 
 
-> [!NOTE][Запрос]
+> [!NOTE]
 > Это примечание. Обычно содержит дополнительную, но не критическую информацию.
 
 > [!TIP]
