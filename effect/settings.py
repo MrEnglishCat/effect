@@ -9,9 +9,16 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import json
 import os
 import secrets
+from email.policy import default
 from pathlib import Path
+from environs import Env
+
+
+environ = Env()
+environ.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4*z$6=02i=k9i@c$9mzy7k@ac_3e6=vp!-b0hn5b22p9z!8#jg'
+SECRET_KEY = environ('JWT_SECRET_KEY', default='django-insecure-4*z$6=02i=k9i@c$9mzy7k@ac_3e6=vp!-b0hn5b22p9z!8#jg')
 '''
 SECRET_KEY находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
 '''
@@ -64,6 +71,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+
+    'auth_app.middleware.LoginMiddleware',
 ]
 
 ROOT_URLCONF = 'effect.urls'
@@ -101,11 +111,11 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'effect',
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+#         'NAME': environ('POSTGRES_DB_NAME', default='effect'),
+#         'USER': environ('POSTGRES_DB_USER', default='postgres'),
+#         'PASSWORD': environ('POSTGRES_DB_PASSWORD', default='postgres'),
+#         'HOST': environ('POSTGRES_DB_HOST', default='localhost'),
+#         'PORT': environ('POSTGRES_DB_PORT', default='5432'),
 #     }
 # }
 
@@ -166,24 +176,21 @@ REST_FRAMEWORK = {
 
 
 # JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', secrets.token_bytes(64))
-JWT_SECRET_KEY = b'\x10W/\x12\xd5\xe0\x80\x91#\x1b\xce\x1fb\xd9hE7\xd76f\xeb$\x8bi\xc5\xaa\xa4\x90+\xbfi\xd0M\xc3\xf4(`/\x82CR\xc0Q\xfa1Om\xcd\xda>b,U\xb4\xe7\xccz\x8a\xd8\xb4\xb7\x06\rn'
-'''
-JWT_SECRET_KEY находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
-'''
-
-JWT_ALGORITHM = 'HS256'
-'''
-JWT_ALGORITHM находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
-'''
-
-JWT_ACCESS_TOKEN_EXPIRATION = 900  # секунд!!! равняется 15 минутам
-'''
-JWT_ACCESS_TOKEN_EXPIRATION находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
-'''
-JWT_REFRESH_TOKEN_EXPIRATION = 30  # дней
-'''
-JWT_REFRESH_TOKEN_EXPIRATION находится тут потому то тестовый. При необходимости может быть размещён в .env файле 
-'''
+JWT_SECRET_KEY = environ('JWT_SECRET_KEY', default=b'\x10W/\x12\xd5\xe0\x80\x91#\x1b\xce\x1fb\xd9hE7\xd76f\xeb$\x8bi\xc5\xaa\xa4\x90+\xbfi\xd0M\xc3\xf4(`/\x82CR\xc0Q\xfa1Om\xcd\xda>b,U\xb4\xe7\xccz\x8a\xd8\xb4\xb7\x06\rn')
 
 
-JWT_DECODE_OPTIONS = {"verify_signature": False}
+JWT_ALGORITHM = environ('JWT_ALGORITHM', default='HS256')
+
+
+JWT_ACCESS_TOKEN_EXPIRATION = environ('JWT_ACCESS_TOKEN_EXPIRATION', default=900)  # секунд!!! равняется 15 минутам
+
+JWT_REFRESH_TOKEN_EXPIRATION = environ('JWT_REFRESH_TOKEN_EXPIRATION', default=30)  # дней
+
+
+
+if (JWT_DECODE_OPTIONS:=environ('JWT_DECODE_OPTIONS', default=None)):
+    if isinstance(JWT_DECODE_OPTIONS, str):
+        JWT_DECODE_OPTIONS = json.loads(JWT_DECODE_OPTIONS)
+
+else:
+    JWT_DECODE_OPTIONS = {"verify_signature": False}
