@@ -42,6 +42,27 @@ PPS:
 - **Мгновенным разлогиниванием** при деактивации пользователя  (перевести на сессии)
 - **RESTful API** с документацией Swagger(есть еще redoc) (на данный момент описания не полные. В планах доработать)
 
+>[!NOTE]
+> Файл ```.env``` нужен для загрузки в переменные окружения секретов. Если файла нету, то используются указанные в коде
+> ```json структура .env файла
+> SECRET_KEY = 'django-insecure-4*z$6=02i=k9i@c$9mzy7k@ac_3e6=vp!-b0hn5b22p9z!8#jg'
+>
+> JWT_SECRET_KEY = b'\x10W/\x12\xd5\xe0\x80\x91#\x1b\xce\x1fb\xd9hE7\xd76f\xeb$\x8bi\xc5\xaa\xa4\x90+\xbfi\xd0M\xc3\xf4(`/\x82CR\xc0Q\xfa1Om\xcd\xda>b,U\xb4\xe7\xccz\x8a\xd8\xb4\xb7\x06\rn'
+>
+> JWT_ALGORITHM = 'HS256'
+>
+>
+> JWT_ACCESS_TOKEN_EXPIRATION = 900  # секунд!!! равняется 15 минутам
+>
+> JWT_REFRESH_TOKEN_EXPIRATION = 30  # дней
+>
+> POSTGRES_DB_NAME='effect',
+> POSTGRES_DB_USER=postgres
+> POSTGRES_DB_PASSWORD=postgres
+> POSTGRES_DB_HOST=localhost
+> POSTGRES_DB_PORT=5432
+```
+
 # API Endpoints — Authentication & Authorization Module
 
 Данный модуль предоставляет REST API для управления пользователями, ролями, действиями, сессиями и аутентификацией в
