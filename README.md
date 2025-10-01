@@ -184,12 +184,11 @@ auth_app/
 |--------------|---------------|-------------------------|
 | jti          | UUID UNIQUE   | Уникальный ID токена    |
 | user_id      | BIGINT (FK)   | Ссылка на пользователя  |
+| session_id   | BIGINT (FK)   | Ссылка на сессии        |
 | issued_at    | DATETIME      | Дата выдачи             |
 | expires_at   | DATETIME      | Дата истечения          |
 | is_revoked   | BOOLEAN       | Отозван ли токен        |
 | revoked_at   | DATETIME NULL | Дата отзыва             |
-| ip_address   | INET NULL     | IP-адрес выдачи         |
-| user_agent   | TEXT          | User-Agent клиента      |
 | last_used_at | DATETIME NULL | Последнее использование |
 
 **Особенности:**
