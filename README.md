@@ -45,7 +45,7 @@ PPS:
 >[!NOTE]
 > Файл ```.env``` нужен для загрузки в переменные окружения секретов. Если файла нету, то используются указанные в коде. Ниже приведена структура .env файла
 > ```json структура .env файла
-> SECRET_KEY = 'django-insecure-4*z$6=02i=k9i@c$9mzy7k@ac_3e6=vp!-b0hn5b22p9z!8#jg'
+> SECRET_KEY=django-insecure-4*z$6=02i=k9i@c$9mzy7k@ac_3e6=vp!-b0hn5b22p9z!8#jg
 >
 > JWT_SECRET_KEY = b'\x10W/\x12\xd5\xe0\x80\x91#\x1b\xce\x1fb\xd9hE7\xd76f\xeb$\x8bi\xc5\xaa\xa4\x90+\xbfi\xd0M\xc3\xf4(`/\x82CR\xc0Q\xfa1Om\xcd\xda>b,U\xb4\xe7\xccz\x8a\xd8\xb4\xb7\x06\rn'
 >
