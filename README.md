@@ -56,7 +56,7 @@ PPS:
 > POSTGRES_DB_HOST=localhost
 > POSTGRES_DB_PORT=5432
 > JWT_DECODE_OPTIONS={"verify_signature": False}
-```
+>```
 
 # API Endpoints — Authentication & Authorization Module
 
